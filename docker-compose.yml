@@ -1,0 +1,10 @@
+version: "3"
+services:
+    jupyter: 
+        image: jupyter/datascience-notebook
+        working_dir: /code
+        volumes:
+            - .:/code
+        ports:
+            - 8888:8888
+        container_name: labo_nb
