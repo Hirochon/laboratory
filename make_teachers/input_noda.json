@@ -1,12 +1,12 @@
 {
   "target":{
-    "dat_num": 10,
+    "dat_num": 16,
     "elip_num_min": 1,
     "elip_num_max": 10,
     "elip_len_x_min": 1,
-    "elip_len_x_max": 10,
+    "elip_len_x_max": 100,
     "elip_len_y_min": 1,
-    "elip_len_y_max": 10,
+    "elip_len_y_max": 100,
     "coord_x_min": 1,
     "coord_x_max": 100,
     "coord_y_min": 1,
