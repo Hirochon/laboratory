@@ -58,39 +58,39 @@ def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_
     return x, y, elip_spot_mirror
 
 
-def make_teacher_data(input_noda):
+def make_teacher_data(noda_mirror_params):
     """ミラー作成関数(訓練データ)"""
 
     dat = []
     print("make_teacher_data")
-    print("out=", input_noda["pkl_surface_teacher"])
+    print("out=", noda_mirror_params["pkl_surface_teacher"])
 
-    param_list, ellipse_nums, axis_x, axis_y, dat_num, nx, ny = make_param_list(input_noda)
+    param_list, ellipse_nums, axis_x, axis_y, dat_num, nx, ny = make_param_list(noda_mirror_params)
 
     for [elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list], ellipse_num in tqdm(zip(param_list, ellipse_nums), total=dat_num):
         dat.append(make_elip_spot_mirror(elip_len_x_list, elip_len_y_list,
                                          coord_x_list, coord_y_list, theta_list,
                                          axis_x, axis_y, ellipse_num, nx, ny))
 
-    with open(input_noda["pkl_surface_teacher"], 'wb') as f:
+    with open(noda_mirror_params["pkl_surface_teacher"], 'wb') as f:
         pickle.dump(dat, f)
 
 
-def make_test_data(input_noda):
+def make_test_data(noda_mirror_params):
     """ミラー作成関数(テストデータ)"""
     
     dat = []
     print("make_test_data")
-    print("out=", input_noda["pkl_surface_test"])
+    print("out=", noda_mirror_params["pkl_surface_test"])
 
-    param_list, ellipse_nums, axis_x, axis_y, dat_num, nx, ny = make_param_list(input_noda)
+    param_list, ellipse_nums, axis_x, axis_y, dat_num, nx, ny = make_param_list(noda_mirror_params)
 
     for [elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list], ellipse_num in tqdm(zip(param_list, ellipse_nums), total=dat_num):
         dat.append(make_elip_spot_mirror(elip_len_x_list, elip_len_y_list,
                                          coord_x_list, coord_y_list, theta_list,
                                          axis_x, axis_y, ellipse_num, nx, ny))
 
-    with open(input_noda["pkl_surface_test"], 'wb') as f:
+    with open(noda_mirror_params["pkl_surface_test"], 'wb') as f:
         pickle.dump(dat, f)
 # 書き換え終わり:N (8/26)
 
@@ -340,15 +340,15 @@ if __name__ == '__main__':
     #     input["pkl_file_test"] = 'test_data.pkl'
 
     with open("input_noda.json", "r") as f:                     # JSONのファイル名を変更
-        input_noda = json.load(f)['target']                     # 名前衝突が起こってたので変数名を変更
-        input_noda["pkl_file_teacher"] = 'train_data.pkl'       # `train_data.pkl`が何者か分からない
-        input_noda["pkl_file_test"] = 'test_data.pkl'           # `test_data.pkl`が何者かわからない
+        noda_mirror_params = json.load(f)['target']                     # 名前衝突が起こってたので変数名を変更
+        noda_mirror_params["pkl_file_teacher"] = 'train_data.pkl'       # `train_data.pkl`が何者か分からない
+        noda_mirror_params["pkl_file_test"] = 'test_data.pkl'           # `test_data.pkl`が何者かわからない
 
-    pkl_file_teacher = input_noda["pkl_file_teacher"]           # なぜ一回変数としておいてる？
-    pkl_file_test = input_noda["pkl_file_test"]                 # なぜ一回変数としておいてる？
+    pkl_file_teacher = noda_mirror_params["pkl_file_teacher"]
+    pkl_file_test = noda_mirror_params["pkl_file_test"]
 
-    make_teacher_data(input_noda)
-    make_test_data(input_noda)
+    make_teacher_data(noda_mirror_params)
+    make_test_data(noda_mirror_params)
     (x_train, t_train) = load_data(pkl_file_teacher)
     (x_test, t_test) = load_data(pkl_file_test)
     print(np.shape(x_train))
