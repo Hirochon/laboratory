@@ -1,0 +1,22 @@
+{
+  "target":{
+    "dat_num": 16,
+    "nx": 100,
+    "ny": 100,
+    "elip_num_min": 1,
+    "elip_num_max": 10,
+    "elip_len_x_min": 1,
+    "elip_len_x_max": 100,
+    "elip_len_y_min": 1,
+    "elip_len_y_max": 100,
+    "coord_x_min": 1,
+    "coord_x_max": 100,
+    "coord_y_min": 1,
+    "coord_y_max": 100,
+    "axis_x": 100,
+    "axis_y": 100,
+    "theta_rate": 1,
+    "pkl_surface_teacher": "pkl_surf_teacher_noda.pkl",
+    "pkl_surface_test": "pkl_surf_test_noda.pkl"
+  }
+}
