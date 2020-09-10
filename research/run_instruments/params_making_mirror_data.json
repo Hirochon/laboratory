@@ -1,11 +1,15 @@
 {
   "dir_name": "first_commit",
   "shape": {
-    "elip": {
-      "train_num": 16,
-      "test_num": 4,
+    "common": {
       "nx": 100,
       "ny": 100,
+      "axis_x": 100,
+      "axis_y": 100
+    },
+    "elip": {
+      "train_num": 9,
+      "test_num": 3,
       "elip_num_min": 1,
       "elip_num_max": 10,
       "elip_len_x_min": 1,
@@ -16,9 +20,16 @@
       "coord_x_max": 100,
       "coord_y_min": 1,
       "coord_y_max": 100,
-      "axis_x": 100,
-      "axis_y": 100,
       "theta_rate": 1
+    },
+    "mode": {
+      "train_num": 9,
+      "test_num": 3,
+      "center": [0,0,0],
+      "max_m": 2,
+      "max_n": 2,
+      "noise": 0.1,
+      "amp": 10.0
     }
   },
   "pkl_mirror_train": "pkl_mirror_train.pkl",
