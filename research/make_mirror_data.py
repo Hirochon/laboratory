@@ -60,13 +60,13 @@ def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_
     return third_dim_elip_spot_mirror
 
 
-def _make_mirror_data(surface_params, is_train):
+def _make_mirror_data(mirror_params, is_train):
     if is_train:
-        elip_dat_num = surface_params["elip"]["train_num"]
+        elip_dat_num = mirror_params["elip"]["train_num"]
     else:
-        elip_dat_num = surface_params["elip"]["test_num"]
+        elip_dat_num = mirror_params["elip"]["test_num"]
     
-    elip_param_list, ellipse_nums, axis_x, axis_y, nx, ny = make_elip_param_list(surface_params["elip"], elip_dat_num)
+    elip_param_list, ellipse_nums, axis_x, axis_y, nx, ny = make_elip_param_list(mirror_params["elip"], elip_dat_num)
 
     mirror_data = []
     for [elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list], ellipse_num in tqdm(zip(elip_param_list, ellipse_nums), total=elip_dat_num):
@@ -79,37 +79,38 @@ def _make_mirror_data(surface_params, is_train):
     return mirror_data
 
 
-def make_mirror_data(surface_params):
+def make_mirror_data(mirror_params):
     """ミラー作成関数(訓練データ/テストデータ)"""
 
     print()
     print("Make train data!")
-    print("out=", surface_params["pkl_surface_train"])
-    train_mirror_data = _make_mirror_data(surface_params["shape"], is_train=True)
+    print("out=", mirror_params["pkl_mirror_train"])
+    train_mirror_data = _make_mirror_data(mirror_params["shape"], is_train=True)
 
     print()
     print("Make test data!")
-    print("out=", surface_params["pkl_surface_test"])
-    test_mirror_data = _make_mirror_data(surface_params["shape"], is_train=False)
+    print("out=", mirror_params["pkl_mirror_test"])
+    test_mirror_data = _make_mirror_data(mirror_params["shape"], is_train=False)
 
     return train_mirror_data, test_mirror_data
 
 
 if __name__ == "__main__":
-    start_folder = "./input_params_data/"
-    name_json_surface_params = "params_making_mirror_data.json"
+    # 実験器具フォルダ/ファイルの指定
+    start_folder = "./run_instruments/"
+    name_json_mirror_params = "params_making_mirror_data.json"
 
-    with open(start_folder + name_json_surface_params, "r") as f:
-        surface_params = json.load(f)
+    with open(start_folder + name_json_mirror_params, "r") as f:
+        mirror_params = json.load(f)
 
-    folder_name = make_dir(surface_params["dir_name"], is_time=True, pre_folder="result/")
+    folder_name = make_dir(mirror_params["dir_name"], is_time=True, pre_folder="result/")
 
-    with open(folder_name + "/" + name_json_surface_params, "w") as f:
-        json.dump(surface_params, f, indent=2)
+    with open(folder_name + "/" + name_json_mirror_params, "w") as f:
+        json.dump(mirror_params, f, indent=2)
 
-    train_mirror_data, test_mirror_data = make_mirror_data(surface_params)
+    train_mirror_data, test_mirror_data = make_mirror_data(mirror_params)
 
-    with open(folder_name + "/" + surface_params["pkl_surface_train"], "wb") as f:
+    with open(folder_name + "/" + mirror_params["pkl_mirror_train"], "wb") as f:
         pickle.dump(train_mirror_data, f)
-    with open(folder_name + "/" + surface_params["pkl_surface_test"], "wb") as f:
+    with open(folder_name + "/" + mirror_params["pkl_mirror_test"], "wb") as f:
         pickle.dump(test_mirror_data, f)

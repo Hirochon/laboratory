@@ -21,6 +21,6 @@
       "theta_rate": 1
     }
   },
-  "pkl_surface_train": "pkl_surf_train.pkl",
-  "pkl_surface_test": "pkl_surf_test.pkl"
+  "pkl_mirror_train": "pkl_mirror_train.pkl",
+  "pkl_mirror_test": "pkl_mirror_test.pkl"
 }
