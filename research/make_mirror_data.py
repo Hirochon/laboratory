@@ -2,25 +2,26 @@ import numpy as np
 import pickle
 import json
 from tqdm import tqdm
+import itertools
 
 from file_operation import make_dir
 
 
-def make_elip_param_list(elip_params, dat_num):
+def make_elip_param_list(elip_params, data_num):
     """ミラー毎の楕円のパラメータをランダム作成関数"""
 
     ellipse_nums = []
     param_list = []
 
-    for dat_i in range(dat_num):
+    for data_i in range(data_num):
 
         ellipse_nums.append(np.random.randint(elip_params["elip_num_min"], elip_params["elip_num_max"]))    # 楕円の数[vector]
 
-        init_elip_len_x_list = np.random.randint(elip_params["elip_len_x_min"], elip_params["elip_len_x_max"], size=ellipse_nums[dat_i])    # 楕円の長さ(横)[matrix]
-        init_elip_len_y_list = np.random.randint(elip_params["elip_len_y_min"], elip_params["elip_len_y_max"], size=ellipse_nums[dat_i])    # 楕円の長さ(縦)[matrix]
-        init_coord_x_list = np.random.randint(elip_params["coord_x_min"], elip_params["coord_x_max"], size=ellipse_nums[dat_i])     # 楕円の中心からのズレ(横)[matrix]
-        init_coord_y_list = np.random.randint(elip_params["coord_y_min"], elip_params["coord_y_max"], size=ellipse_nums[dat_i])     # 楕円の中心からのズレ(縦)[matrix]
-        init_theta_list = np.pi * np.random.rand(ellipse_nums[dat_i]) * 2 / elip_params["theta_rate"]   # 楕円の回転角[matrix]
+        init_elip_len_x_list = np.random.randint(elip_params["elip_len_x_min"], elip_params["elip_len_x_max"], size=ellipse_nums[data_i])    # 楕円の長さ(横)[matrix]
+        init_elip_len_y_list = np.random.randint(elip_params["elip_len_y_min"], elip_params["elip_len_y_max"], size=ellipse_nums[data_i])    # 楕円の長さ(縦)[matrix]
+        init_coord_x_list = np.random.randint(elip_params["coord_x_min"], elip_params["coord_x_max"], size=ellipse_nums[data_i])     # 楕円の中心からのズレ(横)[matrix]
+        init_coord_y_list = np.random.randint(elip_params["coord_y_min"], elip_params["coord_y_max"], size=ellipse_nums[data_i])     # 楕円の中心からのズレ(縦)[matrix]
+        init_theta_list = np.pi * np.random.rand(ellipse_nums[data_i]) * 2 / elip_params["theta_rate"]   # 楕円の回転角[matrix]
 
         param_list.append(np.array([init_elip_len_x_list, init_elip_len_y_list, init_coord_x_list, init_coord_y_list, init_theta_list]))
         
@@ -60,21 +61,73 @@ def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_
     return third_dim_elip_spot_mirror
 
 
-def _make_mirror_data(mirror_params, is_train):
-    if is_train:
-        elip_dat_num = mirror_params["elip"]["train_num"]
-    else:
-        elip_dat_num = mirror_params["elip"]["test_num"]
-    
-    elip_param_list, ellipse_nums, axis_x, axis_y, nx, ny = make_elip_param_list(mirror_params["elip"], elip_dat_num)
+def make_mode_spot_mirror(nx=16, ny=16, m=1, n=1, axis_x=1., axis_y=1., amp=1., noise=0):
+    xx = np.linspace(-0.5, 0.5, nx) * axis_x
+    yy = np.linspace(-0.5, 0.5, ny) * axis_y
+    x, y = np.meshgrid(xx, yy, indexing="ij")
+    phi = np.random.rand() * 2. * np.pi
+    oz = np.zeros((nx, ny), dtype=np.complex)
+    oz[m, n] = np.sin(phi) + 1j * np.cos(phi)
+    oz[-m, -n] = np.sin(phi) - 1j * np.cos(phi)
+    oz = oz.transpose() * (nx * ny / 2) * amp / 2.
+    oi = np.fft.ifftn(oz)
+    """
+    os = np.fft.fftshift(oz)
+    fig,ax = plt.subplots(1,3)
+    ax[0].imshow(np.abs(os))
+    ax[1].imshow(np.real(oi))
+    ax[2].imshow(np.imag(oi))
+    plt.show()
+    """
+    oi = oi + noise * np.random.randn(nx, ny)
+    return x, y, np.real(oi)
 
+
+def _make_mirror_data(mirror_params, is_train):
+    """ミラー作成関数(trainとtestで別々に実行)"""
+
+    ##############
+    # 共通の処理 #
+    ##############
+    mirror_params["elip"]["axis_x"] = mirror_params["mode"]["axis_x"] = mirror_params["common"]["axis_x"]
+    mirror_params["elip"]["axis_y"] = mirror_params["mode"]["axis_y"] = mirror_params["common"]["axis_y"]
+    mirror_params["elip"]["nx"] = mirror_params["mode"]["nx"] = mirror_params["common"]["nx"]
+    mirror_params["elip"]["ny"] = mirror_params["mode"]["ny"] = mirror_params["common"]["ny"]
+    
+    ##############
+    # 楕円ゾーン #
+    ##############
+    if is_train:
+        elip_data_num = mirror_params["elip"]["train_num"]
+        mode_data_num = mirror_params["mode"]["train_num"]
+    else:
+        elip_data_num = mirror_params["elip"]["test_num"]
+        mode_data_num = mirror_params["mode"]["test_num"]
+
+    # 楕円作成のパラメータをランダムに作成
+    elip_param_list, ellipse_nums, axis_x, axis_y, nx, ny = make_elip_param_list(mirror_params["elip"], elip_data_num)
+
+    # make_elip_param_listで作成したパラメータを元に楕円型ミラーデータを作成
     mirror_data = []
-    for [elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list], ellipse_num in tqdm(zip(elip_param_list, ellipse_nums), total=elip_dat_num):
+    for [elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list], ellipse_num in tqdm(zip(elip_param_list, ellipse_nums), total=elip_data_num):
         elip_spot_mirror = make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list, axis_x, axis_y, ellipse_num, nx, ny)
         elip_spot_mirror.update({"elip_len_x_list": elip_len_x_list, "elip_len_y_list": elip_len_y_list,
                                  "coord_x_list": coord_x_list, "coord_y_list": coord_y_list, "theta_list": theta_list,
                                  "axis_x": axis_x, "axis_y": axis_y, "ellipse_num": ellipse_num, "nx": nx, "ny": ny})
         mirror_data.append(elip_spot_mirror)
+
+    ################
+    # モードゾーン #
+    ################
+    mode_params = mirror_params["mode"]
+    m_list, n_list = np.arange(mode_params["max_m"]), np.arange(mode_params["max_n"])
+    for m, n in itertools.product(m_list, n_list):
+        print(m, n)
+        for i in range(mode_data_num):
+            x, y, z = make_mode_spot_mirror(m=m, n=n, nx=mode_params["nx"], ny=mode_params["ny"], axis_x=mode_params["axis_x"],
+                                            axis_y=mode_params["axis_y"], amp=mode_params["amp"], noise=mode_params["noise"])
+            row = {"m": m, "n": n, "x": x, "y": y, "z": z}
+            mirror_data.append(row)
 
     return mirror_data
 
@@ -82,11 +135,13 @@ def _make_mirror_data(mirror_params, is_train):
 def make_mirror_data(mirror_params):
     """ミラー作成関数(訓練データ/テストデータ)"""
 
+    # 訓練データの作成
     print()
     print("Make train data!")
     print("out=", mirror_params["pkl_mirror_train"])
     train_mirror_data = _make_mirror_data(mirror_params["shape"], is_train=True)
 
+    # テストデータの作成
     print()
     print("Make test data!")
     print("out=", mirror_params["pkl_mirror_test"])
