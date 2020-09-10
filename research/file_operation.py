@@ -17,8 +17,7 @@ def make_dir(folder_name, is_time, pre_folder=""):
         strtime = ""
 
     os.makedirs(pre_folder + strtime + folder_name)
-    print()
-    print("\"" + pre_folder + strtime + folder_name + "\" is created!")
+    print("\"" + pre_folder + strtime + folder_name + "\" folder is created!\n")
 
     return pre_folder + strtime + folder_name
 

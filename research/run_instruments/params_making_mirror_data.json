@@ -1,5 +1,5 @@
 {
-  "dir_name": "first_commit",
+  "dir_name": "Onaka_Suita",
   "shape": {
     "common": {
       "nx": 100,
@@ -8,8 +8,8 @@
       "axis_y": 100
     },
     "elip": {
-      "train_num": 9,
-      "test_num": 3,
+      "train_num": 16,
+      "test_num": 4,
       "elip_num_min": 1,
       "elip_num_max": 10,
       "elip_len_x_min": 1,
@@ -23,13 +23,13 @@
       "theta_rate": 1
     },
     "mode": {
-      "train_num": 9,
-      "test_num": 3,
+      "train_num": 16,
+      "test_num": 4,
       "center": [0,0,0],
-      "max_m": 2,
-      "max_n": 2,
+      "max_m": 1,
+      "max_n": 1,
       "noise": 0.1,
-      "amp": 10.0
+      "amp": 1.0
     }
   },
   "pkl_mirror_train": "pkl_mirror_train.pkl",

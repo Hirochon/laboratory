@@ -97,6 +97,7 @@ def _make_mirror_data(mirror_params, is_train):
     ##############
     # 楕円ゾーン #
     ##############
+    print("===Type Ellipse start===")
     if is_train:
         elip_data_num = mirror_params["elip"]["train_num"]
         mode_data_num = mirror_params["mode"]["train_num"]
@@ -115,19 +116,22 @@ def _make_mirror_data(mirror_params, is_train):
                                  "coord_x_list": coord_x_list, "coord_y_list": coord_y_list, "theta_list": theta_list,
                                  "axis_x": axis_x, "axis_y": axis_y, "ellipse_num": ellipse_num, "nx": nx, "ny": ny})
         mirror_data.append(elip_spot_mirror)
+    print("===Type Ellipse end===\n")
 
     ################
     # モードゾーン #
     ################
+    print("===Type Mode start===")
     mode_params = mirror_params["mode"]
     m_list, n_list = np.arange(mode_params["max_m"]), np.arange(mode_params["max_n"])
     for m, n in itertools.product(m_list, n_list):
         print(m, n)
-        for i in range(mode_data_num):
+        for i in tqdm(range(mode_data_num)):
             x, y, z = make_mode_spot_mirror(m=m, n=n, nx=mode_params["nx"], ny=mode_params["ny"], axis_x=mode_params["axis_x"],
                                             axis_y=mode_params["axis_y"], amp=mode_params["amp"], noise=mode_params["noise"])
             row = {"m": m, "n": n, "x": x, "y": y, "z": z}
             mirror_data.append(row)
+    print("===Type Mode end===\n")
 
     return mirror_data
 
@@ -136,15 +140,11 @@ def make_mirror_data(mirror_params):
     """ミラー作成関数(訓練データ/テストデータ)"""
 
     # 訓練データの作成
-    print()
-    print("Make train data!")
-    print("out=", mirror_params["pkl_mirror_train"])
+    print("Make train data!\n")
     train_mirror_data = _make_mirror_data(mirror_params["shape"], is_train=True)
 
     # テストデータの作成
-    print()
-    print("Make test data!")
-    print("out=", mirror_params["pkl_mirror_test"])
+    print("Make test data!\n")
     test_mirror_data = _make_mirror_data(mirror_params["shape"], is_train=False)
 
     return train_mirror_data, test_mirror_data
@@ -167,5 +167,8 @@ if __name__ == "__main__":
 
     with open(folder_name + "/" + mirror_params["pkl_mirror_train"], "wb") as f:
         pickle.dump(train_mirror_data, f)
+        print("output: ", mirror_params["pkl_mirror_train"])
+
     with open(folder_name + "/" + mirror_params["pkl_mirror_test"], "wb") as f:
         pickle.dump(test_mirror_data, f)
+        print("output: ", mirror_params["pkl_mirror_test"])
