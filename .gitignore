@@ -1,2 +1,4 @@
 .ipynb_checkpoints/
 *.pkl
+__pycache__/
+result/
