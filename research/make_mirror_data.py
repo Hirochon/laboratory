@@ -78,10 +78,16 @@ def make_teacher_data(input_noda):
 
 
 if __name__ == "__main__":
-    with open('./data/params_making_data.json', 'r') as f:
-        input_noda = json.load(f)['target']
+    start_folder = "./input_params_data/"
+    name_json_surface_params = "params_making_mirror_data.json"
 
-    make_teacher_data(input_noda)
+    with open(start_folder + name_json_surface_params, "r") as f:
+        surface_params = json.load(f)
+
+    folder_name = make_dir(surface_params['dir_name'], is_time=True, pre_folder='result/')
+
+    with open(folder_name + '/' + name_json_surface_params, "w") as f:
+        json.dump(surface_params, f, indent=2)
 
     with open('pkl_surf_teacher_noda.pkl', 'rb') as f:
         noda = pickle.load(f)
