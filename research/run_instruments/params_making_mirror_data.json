@@ -1,11 +1,11 @@
 {
-  "dir_name": "Onaka_Suita",
+  "dir_name": "manabesan_pass",
   "shape": {
     "common": {
-      "nx": 100,
-      "ny": 100,
-      "axis_x": 100,
-      "axis_y": 100
+      "nx": 64,
+      "ny": 64,
+      "axis_x": 64,
+      "axis_y": 64
     },
     "elip": {
       "train_num": 16,
@@ -13,21 +13,21 @@
       "elip_num_min": 1,
       "elip_num_max": 10,
       "elip_len_x_min": 1,
-      "elip_len_x_max": 100,
+      "elip_len_x_max": 64,
       "elip_len_y_min": 1,
-      "elip_len_y_max": 100,
+      "elip_len_y_max": 64,
       "coord_x_min": 1,
-      "coord_x_max": 100,
+      "coord_x_max": 64,
       "coord_y_min": 1,
-      "coord_y_max": 100,
+      "coord_y_max": 64,
       "theta_rate": 1
     },
     "mode": {
-      "train_num": 16,
-      "test_num": 4,
+      "train_num": 0,
+      "test_num": 0,
       "center": [0,0,0],
-      "max_m": 1,
-      "max_n": 1,
+      "max_m": 5,
+      "max_n": 5,
       "noise": 0.1,
       "amp": 1.0
     }

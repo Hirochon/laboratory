@@ -97,7 +97,6 @@ def _make_mirror_data(mirror_params, is_train):
     ##############
     # 楕円ゾーン #
     ##############
-    print("===Type Ellipse start===")
     if is_train:
         elip_data_num = mirror_params["elip"]["train_num"]
         mode_data_num = mirror_params["mode"]["train_num"]
@@ -105,33 +104,41 @@ def _make_mirror_data(mirror_params, is_train):
         elip_data_num = mirror_params["elip"]["test_num"]
         mode_data_num = mirror_params["mode"]["test_num"]
 
-    # 楕円作成のパラメータをランダムに作成
-    elip_param_list, ellipse_nums, axis_x, axis_y, nx, ny = make_elip_param_list(mirror_params["elip"], elip_data_num)
+    if elip_data_num > 0:
+        print("===Type Ellipse start===")
 
-    # make_elip_param_listで作成したパラメータを元に楕円型ミラーデータを作成
-    mirror_data = []
-    for [elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list], ellipse_num in tqdm(zip(elip_param_list, ellipse_nums), total=elip_data_num):
-        elip_spot_mirror = make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list, axis_x, axis_y, ellipse_num, nx, ny)
-        elip_spot_mirror.update({"elip_len_x_list": elip_len_x_list, "elip_len_y_list": elip_len_y_list,
-                                 "coord_x_list": coord_x_list, "coord_y_list": coord_y_list, "theta_list": theta_list,
-                                 "axis_x": axis_x, "axis_y": axis_y, "ellipse_num": ellipse_num, "nx": nx, "ny": ny})
-        mirror_data.append(elip_spot_mirror)
-    print("===Type Ellipse end===\n")
+        # 楕円作成のパラメータをランダムに作成
+        elip_param_list, ellipse_nums, axis_x, axis_y, nx, ny = make_elip_param_list(mirror_params["elip"], elip_data_num)
+
+        # make_elip_param_listで作成したパラメータを元に楕円型ミラーデータを作成
+        mirror_data = []
+        for [elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list], ellipse_num in tqdm(zip(elip_param_list, ellipse_nums), total=elip_data_num):
+            elip_spot_mirror = make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list, axis_x, axis_y, ellipse_num, nx, ny)
+            elip_spot_mirror.update({"elip_len_x_list": elip_len_x_list, "elip_len_y_list": elip_len_y_list,
+                                    "coord_x_list": coord_x_list, "coord_y_list": coord_y_list, "theta_list": theta_list,
+                                    "axis_x": axis_x, "axis_y": axis_y, "ellipse_num": ellipse_num, "nx": nx, "ny": ny})
+            mirror_data.append(elip_spot_mirror)
+        print("===Type Ellipse end===\n")
+    else:
+        print("ellipse passed!\n")
 
     ################
     # モードゾーン #
     ################
-    print("===Type Mode start===")
-    mode_params = mirror_params["mode"]
-    m_list, n_list = np.arange(mode_params["max_m"]), np.arange(mode_params["max_n"])
-    for m, n in itertools.product(m_list, n_list):
-        print(m, n)
-        for i in tqdm(range(mode_data_num)):
-            x, y, z = make_mode_spot_mirror(m=m, n=n, nx=mode_params["nx"], ny=mode_params["ny"], axis_x=mode_params["axis_x"],
-                                            axis_y=mode_params["axis_y"], amp=mode_params["amp"], noise=mode_params["noise"])
-            row = {"m": m, "n": n, "x": x, "y": y, "z": z}
-            mirror_data.append(row)
-    print("===Type Mode end===\n")
+    if mode_data_num > 0:
+        print("===Type Mode start===")
+        mode_params = mirror_params["mode"]
+        m_list, n_list = np.arange(mode_params["max_m"]), np.arange(mode_params["max_n"])
+        for m, n in itertools.product(m_list, n_list):
+            print(m, n)
+            for i in tqdm(range(mode_data_num)):
+                x, y, z = make_mode_spot_mirror(m=m, n=n, nx=mode_params["nx"], ny=mode_params["ny"], axis_x=mode_params["axis_x"],
+                                                axis_y=mode_params["axis_y"], amp=mode_params["amp"], noise=mode_params["noise"])
+                row = {"m": m, "n": n, "x": x, "y": y, "z": z}
+                mirror_data.append(row)
+        print("===Type Mode end===\n")
+    else:
+        print("mode passed!\n")
 
     return mirror_data
 
