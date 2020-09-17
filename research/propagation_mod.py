@@ -214,7 +214,7 @@ def SPHERICAL_SPHERICAL(input_data,target_cords,detect_cords,source_cords,cpu=No
         p.close()
         H = np.array(res).reshape((detect_cords.shape[0],target_cords.shape[0]))
         t2 = time.time()
-        print("With multiprocessing cpu=",cpu," cputime=",t2-t1)
+        # print("With multiprocessing cpu=",cpu," cputime=",t2-t1)
 
     return H
 
@@ -243,13 +243,13 @@ def WAVE_MAT_CAL(g,target_val,divs=None):
         s = np.empty((g.shape[1]))
         s = np.dot(g,target_val)
         t2 = time.time()
-        print("W/O  DASK: d=",divs," cputime=",t2-t1)
+        # print("W/O  DASK: d=",divs," cputime=",t2-t1)
     else:
         if divs ==0: divs = int(np.max(g.shape)/500)
         t1 = time.time()
         s = WAVE_MAT_CAL_by_DASK(g,target_val,d=divs)
         t2 = time.time()
-        print("With DASK: d=",divs," cputime=",t2-t1)
+        # print("With DASK: d=",divs," cputime=",t2-t1)
     return s
 
 def WAVE_MAT_CAL_by_DASK(x,y,d=4):
