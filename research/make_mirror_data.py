@@ -165,17 +165,17 @@ if __name__ == "__main__":
     with open(start_folder + name_json_mirror_params, "r") as f:
         mirror_params = json.load(f)
 
-    folder_name = make_dir(mirror_params["dir_name"], is_time=True, pre_folder="result/")
+    result_folder = make_dir(mirror_params["dir_name"], is_time=True, pre_folder="result/")
 
-    with open(folder_name + "/" + name_json_mirror_params, "w") as f:
+    with open(result_folder + "/" + name_json_mirror_params, "w") as f:
         json.dump(mirror_params, f, indent=2)
 
     train_mirror_data, test_mirror_data = make_mirror_data(mirror_params)
 
-    with open(folder_name + "/" + mirror_params["pkl_mirror_train"], "wb") as f:
+    with open(result_folder + "/" + mirror_params["pkl_mirror_train"], "wb") as f:
         pickle.dump(train_mirror_data, f)
         print("output: ", mirror_params["pkl_mirror_train"])
 
-    with open(folder_name + "/" + mirror_params["pkl_mirror_test"], "wb") as f:
+    with open(result_folder + "/" + mirror_params["pkl_mirror_test"], "wb") as f:
         pickle.dump(test_mirror_data, f)
         print("output: ", mirror_params["pkl_mirror_test"])
