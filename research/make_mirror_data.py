@@ -131,7 +131,7 @@ def _make_mirror_data(mirror_params, is_train):
         m_list, n_list = np.arange(mode_params["max_m"]), np.arange(mode_params["max_n"])
         for m, n in itertools.product(m_list, n_list):
             print(m, n)
-            for i in tqdm(range(mode_data_num)):
+            for _ in tqdm(range(mode_data_num)):
                 x, y, z = make_mode_spot_mirror(m=m, n=n, nx=mode_params["nx"], ny=mode_params["ny"], axis_x=mode_params["axis_x"],
                                                 axis_y=mode_params["axis_y"], amp=mode_params["amp"], noise=mode_params["noise"])
                 row = {"m": m, "n": n, "x": x, "y": y, "z": z}
