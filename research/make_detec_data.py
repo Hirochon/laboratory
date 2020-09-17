@@ -76,6 +76,8 @@ def reflect_detector(xx, yy, zz, detec_params):
     # CHECK_3D_PROFILE(detect_cords,np.imag(g),"g_imag","")
     #CHECK_3D_PROFILE(detect_cords,np.abs(g), "g_abs","")
 
+    return g
+
 
 def _make_detec_data(detec_params, mirror_data):
     detec_data = []
@@ -111,7 +113,7 @@ if __name__ == "__main__":
     name_json_detec_params = "params_making_detec_data.json"
 
     # ハードコーディング警報(｡･_･｡)
-    result_folder = "result/" + "2020_0917_183350_mod_make_mirror"
+    result_folder = "result/" + "2020_0917_201204_experiment"
 
     # detectorのjsonパラメータをロード
     with open(start_folder + name_json_detec_params, "r") as f:
