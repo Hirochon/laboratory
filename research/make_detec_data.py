@@ -25,17 +25,17 @@ def load_mirror_data(mirror_data):
 
     if len(elip_mirror_data) > 0:
         for row in elip_mirror_data:
-            x.append([row["x"]])
-            y.append([row["y"]])
-            z.append([row["z"]])
+            x.append(row["x"])
+            y.append(row["y"])
+            z.append(row["z"])
             shape.append("elip")
             info.append(row["info"])
 
     if len(mode_mirror_data) > 0:
         for row in mode_mirror_data:
-            x.append([row["x"]])
-            y.append([row["y"]])
-            z.append([row["z"]])
+            x.append(row["x"])
+            y.append(row["y"])
+            z.append(row["z"])
             shape.append("mode")
             info.append(row["info"])
         
@@ -84,9 +84,9 @@ def _make_detec_data(detec_params, mirror_data):
     (x, y, z, shape, info) = load_mirror_data(mirror_data)
 
     for i in tqdm(range(x.shape[0])):
-        xx = x[i, :, :, :].flatten()
-        yy = y[i, :, :, :].flatten()
-        zz = z[i, :, :, :].flatten()
+        xx = x[i, :, :].flatten()
+        yy = y[i, :, :].flatten()
+        zz = z[i, :, :].flatten()
         g = reflect_detector(xx, yy, zz, detec_params)
         g = np.reshape(g, (detec_params["detector"]["num_x"], detec_params["detector"]["num_y"]))
         row = {"z": g, "shape": shape[i], "info": info[i]}
