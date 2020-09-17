@@ -1,5 +1,5 @@
 {
-  "center": [0.0,0.0,-100.0],
+  "center": [0.0, 0.0, -100.0],
   "num_x" : 16,
   "num_y" : 16,
   "num_z" : 1,
@@ -9,5 +9,6 @@
   "x_theata" : 0.0,
   "y_theata" : 0.0,
   "z_theata" : 0.0,
-  "random": ""
+  "pkl_detec_train": "pkl_detec_train.pkl",
+  "pkl_detec_test": "pkl_detec_test.pkl"
 }
