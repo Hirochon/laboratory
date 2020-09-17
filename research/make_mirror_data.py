@@ -94,9 +94,6 @@ def _make_mirror_data(mirror_params, is_train):
     mirror_params["elip"]["nx"] = mirror_params["mode"]["nx"] = mirror_params["common"]["nx"]
     mirror_params["elip"]["ny"] = mirror_params["mode"]["ny"] = mirror_params["common"]["ny"]
     
-    ##############
-    # 楕円ゾーン #
-    ##############
     if is_train:
         elip_data_num = mirror_params["elip"]["train_num"]
         mode_data_num = mirror_params["mode"]["train_num"]
@@ -104,6 +101,10 @@ def _make_mirror_data(mirror_params, is_train):
         elip_data_num = mirror_params["elip"]["test_num"]
         mode_data_num = mirror_params["mode"]["test_num"]
 
+    ##############
+    # 楕円ゾーン #
+    ##############
+    elip_mirror_data = []
     if elip_data_num > 0:
         print("===Type Ellipse start===")
 
@@ -111,20 +112,21 @@ def _make_mirror_data(mirror_params, is_train):
         elip_param_list, ellipse_nums, axis_x, axis_y, nx, ny = make_elip_param_list(mirror_params["elip"], elip_data_num)
 
         # make_elip_param_listで作成したパラメータを元に楕円型ミラーデータを作成
-        mirror_data = []
         for [elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list], ellipse_num in tqdm(zip(elip_param_list, ellipse_nums), total=elip_data_num):
             elip_spot_mirror = make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list, axis_x, axis_y, ellipse_num, nx, ny)
-            elip_spot_mirror.update({"elip_len_x_list": elip_len_x_list, "elip_len_y_list": elip_len_y_list,
-                                    "coord_x_list": coord_x_list, "coord_y_list": coord_y_list, "theta_list": theta_list,
-                                    "axis_x": axis_x, "axis_y": axis_y, "ellipse_num": ellipse_num, "nx": nx, "ny": ny})
-            mirror_data.append(elip_spot_mirror)
+            elip_spot_mirror_params = {"elip_len_x_list": elip_len_x_list, "elip_len_y_list": elip_len_y_list,
+                                       "coord_x_list": coord_x_list, "coord_y_list": coord_y_list, "theta_list": theta_list,
+                                       "axis_x": axis_x, "axis_y": axis_y, "ellipse_num": ellipse_num, "nx": nx, "ny": ny}
+            elip_spot_mirror.update({"info": elip_spot_mirror_params})
+            elip_mirror_data.append(elip_spot_mirror)
         print("===Type Ellipse end===\n")
     else:
-        print("ellipse passed!\n")
+        print("---Ignore Ellipse---\n")
 
     ################
     # モードゾーン #
     ################
+    mode_mirror_data = []
     if mode_data_num > 0:
         print("===Type Mode start===")
         mode_params = mirror_params["mode"]
@@ -134,11 +136,15 @@ def _make_mirror_data(mirror_params, is_train):
             for _ in tqdm(range(mode_data_num)):
                 x, y, z = make_mode_spot_mirror(m=m, n=n, nx=mode_params["nx"], ny=mode_params["ny"], axis_x=mode_params["axis_x"],
                                                 axis_y=mode_params["axis_y"], amp=mode_params["amp"], noise=mode_params["noise"])
-                row = {"m": m, "n": n, "x": x, "y": y, "z": z}
-                mirror_data.append(row)
+                row = {"x": x, "y": y, "z": z}
+                mode_spot_mirror_params = {"m": m, "n": n}
+                row.update({"info": mode_spot_mirror_params})
+                mode_mirror_data.append(row)
         print("===Type Mode end===\n")
     else:
-        print("mode passed!\n")
+        print("---Ignore Mode---\n")
+
+    mirror_data = {"elip": elip_mirror_data, "mode": mode_mirror_data}
 
     return mirror_data
 
