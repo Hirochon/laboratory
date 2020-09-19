@@ -8,18 +8,18 @@
       "axis_y": 64
     },
     "elip": {
-      "train_num": 16,
-      "test_num": 4,
+      "train_num": 3,
+      "test_num": 0,
       "elip_num_min": 1,
-      "elip_num_max": 10,
+      "elip_num_max": 2,
       "elip_len_x_min": 1,
-      "elip_len_x_max": 64,
+      "elip_len_x_max": 45,
       "elip_len_y_min": 1,
-      "elip_len_y_max": 64,
+      "elip_len_y_max": 45,
       "coord_x_min": 1,
-      "coord_x_max": 64,
+      "coord_x_max": 65,
       "coord_y_min": 1,
-      "coord_y_max": 64,
+      "coord_y_max": 65,
       "theta_rate": 1
     },
     "mode": {

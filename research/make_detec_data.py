@@ -113,7 +113,7 @@ if __name__ == "__main__":
     name_json_detec_params = "params_making_detec_data.json"
 
     # ハードコーディング警報(｡･_･｡)
-    result_folder = "result/" + "2020_0917_201204_experiment"
+    result_folder = "result/" + "2020_0919_164308_experiment"
 
     # detectorのjsonパラメータをロード
     with open(start_folder + name_json_detec_params, "r") as f:

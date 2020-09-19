@@ -47,7 +47,7 @@ def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_
                 y_formula = Y**2 / elip_len_y_list[k]**2    # 楕円の方程式のyとb部分
 
                 if x_formula + y_formula <= 1:
-                    elip_spot_mirror[j, i] += 1
+                    elip_spot_mirror[j, i] += np.exp(-(X**2/elip_len_x_list[k]**2)-(Y**2/elip_len_y_list[k]**2))
 
     # 楕円作成後にnxとnyに合わせてスケールを変化させることを理想としている。
     # 現在は未実装なので、np.linspace(-0.5, 0.5, nx) が np.linspace(-0.5, 0.5, axis_x)となってる。
