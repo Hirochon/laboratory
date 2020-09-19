@@ -107,20 +107,17 @@ def make_detec_data(detec_params, train_mirror_data, test_mirror_data):
     return train_detec_data, test_detec_data
 
 
-if __name__ == "__main__":
+def main_make_detec_data(result_folder):
     start_folder = "./run_instruments/"
     name_json_mirror_params = "params_making_mirror_data.json"
     name_json_detec_params = "params_making_detec_data.json"
-
-    # ハードコーディング警報(｡･_･｡)
-    result_folder = "result/" + "2020_0919_164308_experiment"
 
     # detectorのjsonパラメータをロード
     with open(start_folder + name_json_detec_params, "r") as f:
         detec_params = json.load(f)
 
     # detectorのjsonパラメータを結果にdump
-    with open(result_folder + "/" + name_json_detec_params, "w") as f:
+    with open(result_folder + name_json_detec_params, "w") as f:
         json.dump(detec_params, f, indent=2)
 
     # mirrorのパラメーターjsonからmirrorのデータ名をロード
@@ -128,17 +125,55 @@ if __name__ == "__main__":
         mirror_params = json.load(f)
 
     # mirrorのデータをロード
-    with open(result_folder + "/" + mirror_params["pkl_mirror_train"], "rb") as f:
+    with open(result_folder + mirror_params["pkl_mirror_train"], "rb") as f:
         train_mirror_data = pickle.load(f)
-    with open(result_folder + "/" + mirror_params["pkl_mirror_test"], "rb") as f:
+    with open(result_folder + mirror_params["pkl_mirror_test"], "rb") as f:
         test_mirror_data = pickle.load(f)
 
     train_detec_data, test_detec_data = make_detec_data(detec_params, train_mirror_data, test_mirror_data)
 
-    with open(result_folder + "/" + detec_params["pkl_detec_train"], "wb") as f:
+    with open(result_folder + detec_params["pkl_detec_train"], "wb") as f:
         pickle.dump(train_detec_data, f)
         print("output: ", detec_params["pkl_detec_train"])
-
-    with open(result_folder + "/" + detec_params["pkl_detec_test"], "wb") as f:
+    with open(result_folder + detec_params["pkl_detec_test"], "wb") as f:
         pickle.dump(test_detec_data, f)
         print("output: ", detec_params["pkl_detec_test"])
+
+    print("Build {} folder\n".format(result_folder))
+
+
+if __name__ == "__main__":
+    start_folder = "./run_instruments/"
+    name_json_mirror_params = "params_making_mirror_data.json"
+    name_json_detec_params = "params_making_detec_data.json"
+
+    # detectorのjsonパラメータをロード
+    with open(start_folder + name_json_detec_params, "r") as f:
+        detec_params = json.load(f)
+
+    result_folder = "result/" + detec_params["result_folder"] + "/"
+
+    # detectorのjsonパラメータを結果にdump
+    with open(result_folder + name_json_detec_params, "w") as f:
+        json.dump(detec_params, f, indent=2)
+
+    # mirrorのパラメーターjsonからmirrorのデータ名をロード
+    with open(start_folder + name_json_mirror_params, "r") as f:
+        mirror_params = json.load(f)
+
+    # mirrorのデータをロード
+    with open(result_folder + mirror_params["pkl_mirror_train"], "rb") as f:
+        train_mirror_data = pickle.load(f)
+    with open(result_folder + mirror_params["pkl_mirror_test"], "rb") as f:
+        test_mirror_data = pickle.load(f)
+
+    train_detec_data, test_detec_data = make_detec_data(detec_params, train_mirror_data, test_mirror_data)
+
+    with open(result_folder + detec_params["pkl_detec_train"], "wb") as f:
+        pickle.dump(train_detec_data, f)
+        print("output: ", detec_params["pkl_detec_train"])
+    with open(result_folder + detec_params["pkl_detec_test"], "wb") as f:
+        pickle.dump(test_detec_data, f)
+        print("output: ", detec_params["pkl_detec_test"])
+
+    print("Build {} folder\n".format(result_folder))

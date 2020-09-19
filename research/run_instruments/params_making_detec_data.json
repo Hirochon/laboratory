@@ -29,6 +29,7 @@
     "___comment":"choose 'complex' or 'real'",
     "type":"complex"
   },
-  "pkl_detec_train"   : "pkl_detec_train.pkl",
-  "pkl_detec_test"      : "pkl_detec_test.pkl"
+  "pkl_detec_train": "pkl_detec_train.pkl",
+  "pkl_detec_test": "pkl_detec_test.pkl",
+  "result_folder": "experiment"
 }

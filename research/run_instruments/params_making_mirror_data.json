@@ -8,7 +8,7 @@
       "axis_y": 64
     },
     "elip": {
-      "train_num": 3,
+      "train_num": 5,
       "test_num": 0,
       "elip_num_min": 1,
       "elip_num_max": 2,
