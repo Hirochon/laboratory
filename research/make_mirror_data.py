@@ -3,6 +3,7 @@ import pickle
 import json
 from tqdm import tqdm
 import itertools
+from PIL import Image
 
 from file_operation import make_dir
 
@@ -49,15 +50,17 @@ def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_
                 if x_formula + y_formula <= 1:
                     elip_spot_mirror[j, i] += np.exp(-(X**2/elip_len_x_list[k]**2)-(Y**2/elip_len_y_list[k]**2))
 
-    # 楕円作成後にnxとnyに合わせてスケールを変化させることを理想としている。
-    # 現在は未実装なので、np.linspace(-0.5, 0.5, nx) が np.linspace(-0.5, 0.5, axis_x)となってる。
-    # つまりnxとnyは引数として存在しているが、何もしていない。実装予定(記: 2020/9/11)。
-    xx = np.linspace(-0.5, 0.5, axis_x) * axis_x    # -0.5〜0.5間でaxis_x個に分けて、axis_xでブロードキャスト
-    yy = np.linspace(-0.5, 0.5, axis_y) * axis_y    # -0.5〜0.5間でaxis_y個に分けて、axis_yでブロードキャスト
+    xx = np.linspace(-0.5, 0.5, nx) * axis_x    # -0.5〜0.5間でaxis_x個に分けて、axis_xでブロードキャスト
+    yy = np.linspace(-0.5, 0.5, ny) * axis_y    # -0.5〜0.5間でaxis_y個に分けて、axis_yでブロードキャスト
     x, y = np.meshgrid(xx, yy, indexing="ij")   # 2次元配列としてxとyをそれぞれ用意
-    
-    third_dim_elip_spot_mirror = {"x": x, "y": y, "z": elip_spot_mirror}
-    
+
+    if (nx != axis_x) or (ny != axis_y):    # 想定した枠と分割する個数が異なる場合に、画素を拡大/縮小させることにより、対応。
+        Imaged_elip_spot_mirror = Image.fromarray(elip_spot_mirror)
+        resized_elip_spot_mirror = np.asarray(Imaged_elip_spot_mirror.resize((nx,ny)))
+        third_dim_elip_spot_mirror = {"x": x, "y": y, "z": resized_elip_spot_mirror}
+    else:
+        third_dim_elip_spot_mirror = {"x": x, "y": y, "z": elip_spot_mirror}
+
     return third_dim_elip_spot_mirror
 
 
