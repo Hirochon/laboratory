@@ -16,7 +16,7 @@ def make_elip_param_list(elip_params, data_num):
     パラメータをランダムで作成致します。
 
     Args:
-        elip_params (dict{...}): `params_making_mirror_data.json`により範囲を指定されたパラメータの辞書群。
+        elip_params (dict{...}): elip内。`params_making_mirror_data.json`により範囲を指定されたパラメータの辞書群。
         data_num (int): ミラーの数。
     
     Returns:
@@ -107,6 +107,10 @@ def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_
 
 
 def make_mode_spot_mirror(nx=16, ny=16, m=1, n=1, axis_x=1., axis_y=1., amp=1., noise=0):
+    """ミラー毎に線上のシマシマ作成&代入
+
+    """
+
     xx = np.linspace(-0.5, 0.5, nx) * axis_x
     yy = np.linspace(-0.5, 0.5, ny) * axis_y
     x, y = np.meshgrid(xx, yy, indexing="ij")
@@ -129,7 +133,18 @@ def make_mode_spot_mirror(nx=16, ny=16, m=1, n=1, axis_x=1., axis_y=1., amp=1., 
 
 
 def _make_mirror_data(mirror_params, is_train):
-    """ミラー作成関数(trainとtestで別々に実行)"""
+    """ミラー作成関数(elipとmodeのデータを作ることに集中する関数)
+    
+    楕円作成関数とmode作成関数を別々に実行。
+
+    Args:
+        mirror_params (common: {...}, elip: {...}, mode: {...}): shape内。詳しくは`params_making_mirror_data.json`を参照。
+        is_train (boolean): 訓練データですか？
+
+    Returns:
+        mirror_data (dict{elip: list[dict{x:~,y:~,z:~,info:{...}]}, mode: list[dict{m:~,n:~,z~,x~,y~}]}): elipとmodeでそれぞれ作成したミラーのデータ
+    
+    """
 
     ##############
     # 共通の処理 #
@@ -195,7 +210,14 @@ def _make_mirror_data(mirror_params, is_train):
 
 
 def make_mirror_data(mirror_params):
-    """ミラー作成関数(訓練データ/テストデータ)"""
+    """ミラー作成関数(trainとtestのデータを作ることに集中する関数)
+    
+    trainかtestかを分けるためだけの関数。
+    これにより同じ処理を複数回書かずに済む。
+
+    引数は戻り値とほぼ同じなので省略。
+    
+    """
 
     # 訓練データの作成
     print("Make train data!\n")
@@ -209,6 +231,15 @@ def make_mirror_data(mirror_params):
 
 
 def main_make_mirror_data():
+    """ミラー作成の基幹となる場所。主にファイルの読み込み/書き込み。
+
+    make_data.pyと連携して`make_detec_data.py`と一括で実行する際に通る道。
+
+    Returns:
+        result_folder (str): 作成したフォルダ名
+
+    """
+
     start_folder = "./run_instruments/"
     name_json_mirror_params = "params_making_mirror_data.json"
 
@@ -235,6 +266,8 @@ def main_make_mirror_data():
 
 
 if __name__ == "__main__":
+    """ミラーのデータのみ作る際に使う(デバッグ用)"""
+
     start_folder = "./run_instruments/"
     name_json_mirror_params = "params_making_mirror_data.json"
 
