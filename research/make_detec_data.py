@@ -10,7 +10,8 @@ from propagation_mod import (
     MAKE_PROPAG_MTRX,
     SELECT_MATRIX_TYPE,
     WAVE_MAT_CAL,
-    SELECT_ADD_NOISE)
+    SELECT_ADD_NOISE
+    )
 
 
 def load_mirror_data(mirror_data):

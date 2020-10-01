@@ -16,7 +16,7 @@ def make_elip_param_list(elip_params, data_num):
     パラメータをランダムで作成致します。
 
     Args:
-        elip_params (dict): `params_making_mirror_data.json`により範囲を指定されたパラメータの辞書群。
+        elip_params (dict{...}): `params_making_mirror_data.json`により範囲を指定されたパラメータの辞書群。
         data_num (int): ミラーの数。
     
     Returns:
@@ -52,9 +52,25 @@ def make_elip_param_list(elip_params, data_num):
 
 
 def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list, axis_x, axis_y, ellipse_num, nx, ny):
-    """楕円毎に与えられたパラメータに従って楕円を描いていく
+    """ミラー毎に楕円(z)とx,yの値を入れていく
     
-    Args
+    ①楕円毎に与えられたパラメータに従って楕円を描いていく
+    ②xとyについて対応する値を代入
+    ③楕円の値(z)の画素値を拡大/縮小
+    
+    Args:
+        elip_len_x_list (list[int]): 楕円のx方向に関しての半径
+        elip_len_y_list (list[int]): 楕円のy方向に関しての半径
+        coord_x_list (list[int]): xに関しての中心点からのズレ
+        coord_y_list (list[int]): yに関しての中心点からのズレ
+        theta_list (list[float]): 回転角度(radian)
+        axis_x: xの0.5に対しての大きさ
+        axis_y: yの0.5に対しての大きさ
+        nx: -axis_x〜axis_xまでをnx個に細分化
+        ny: -axis_y〜axis_yまでをny個に細分化
+
+    Returns:
+        third_dim_elip_spot_mirror (dict{x: list[[float]], y: list[[float]], z: list[[float]]}): xとyとミラー(楕円)の値(高さ)
     
     """
     
@@ -74,7 +90,7 @@ def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_
                 y_formula = Y**2 / elip_len_y_list[k]**2    # 楕円の方程式のyとb部分
 
                 if x_formula + y_formula <= 1:
-                    elip_spot_mirror[j, i] += np.exp(-(X**2/elip_len_x_list[k]**2)-(Y**2/elip_len_y_list[k]**2))
+                    elip_spot_mirror[j, i] += np.exp(-(X**2/elip_len_x_list[k]**2)-(Y**2/elip_len_y_list[k]**2))    # ガウス分布
 
     xx = np.linspace(-0.5, 0.5, nx) * axis_x    # -0.5〜0.5間でnx個に分けて、axis_xでブロードキャスト
     yy = np.linspace(-0.5, 0.5, ny) * axis_y    # -0.5〜0.5間でnx個に分けて、axis_yでブロードキャスト
