@@ -14,7 +14,26 @@ from propagation_mod import (
     )
 
 
-def load_mirror_data(mirror_data):
+def mod_mirror_data(mirror_data):
+    """ロードしたミラーのデータを変形する関数
+    
+    `make_mirror_data.py`で作成したデータを`make_detec_data.py`にとって扱いやすくさせる処理
+
+    Args:
+        mirror_data (dict{elip: list[...], mode: list[...],}): ミラーデータが入ってます。
+    
+    Returns:
+        np_x (ndarray[[[float]]]): xの値
+        np_y (ndarray[[[float]]]): yの値
+        np_z (ndarray[[[float]]]): zの値(mode or elip)
+        np_shape (ndarray[str]): mode or elip
+        np_info (ndarray[dict{...}]): option of mode or elip
+
+    Note:
+        前回のバージョンより、append時に[]を一段階抜いています。
+    
+    """
+
     elip_mirror_data = mirror_data["elip"]
     mode_mirror_data = mirror_data["mode"]
 
@@ -50,6 +69,7 @@ def load_mirror_data(mirror_data):
 
 
 def reflect_detector(xx, yy, zz, detec_params):
+    """ミラーで反射して観測する関数"""
     target_cords = np.array([xx, yy, zz]).transpose()
     target_value = np.ones((target_cords.shape[0]))
 
@@ -82,7 +102,7 @@ def reflect_detector(xx, yy, zz, detec_params):
 
 def _make_detec_data(detec_params, mirror_data):
     detec_data = []
-    (x, y, z, shape, info) = load_mirror_data(mirror_data)
+    (x, y, z, shape, info) = mod_mirror_data(mirror_data)
 
     for i in tqdm(range(x.shape[0])):
         xx = x[i, :, :].flatten()
