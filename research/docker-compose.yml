@@ -1,0 +1,9 @@
+version: '3.3'
+services:
+  research:
+    build: ./
+    tty: true
+    stdin_open: true
+    volumes:
+      - .:/code
+    container_name: 'research_python'
