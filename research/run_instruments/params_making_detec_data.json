@@ -29,7 +29,7 @@
     "___comment":"choose 'complex' or 'real'",
     "type":"complex"
   },
-  "pkl_detec_train": "pkl_detec_train.pkl",
-  "pkl_detec_test": "pkl_detec_test.pkl",
+  "pkl_detec_train": "detec_train_data.pkl",
+  "pkl_detec_test": "detec_test_data.pkl",
   "result_folder": "2020_0923_225754_none_elip_and_mode"
 }

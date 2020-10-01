@@ -1,25 +1,25 @@
 {
-  "dir_name": "only_elip_mirror_data",
+  "dir_name": "only_16_elips",
   "shape": {
     "common": {
       "nx": 128,
       "ny": 128,
-      "axis_x": 100,
-      "axis_y": 100
+      "axis_x": 128,
+      "axis_y": 128
     },
     "elip": {
       "train_num": 16,
       "test_num": 0,
       "elip_num_min": 1,
-      "elip_num_max": 3,
+      "elip_num_max": 10,
       "elip_len_x_min": 1,
-      "elip_len_x_max": 75,
+      "elip_len_x_max": 100,
       "elip_len_y_min": 1,
-      "elip_len_y_max": 75,
+      "elip_len_y_max": 100,
       "coord_x_min": 1,
-      "coord_x_max": 101,
+      "coord_x_max": 128,
       "coord_y_min": 1,
-      "coord_y_max": 101,
+      "coord_y_max": 128,
       "theta_rate": 1
     },
     "mode": {
@@ -32,6 +32,6 @@
       "amp": 1.0
     }
   },
-  "pkl_mirror_train": "pkl_mirror_train.pkl",
-  "pkl_mirror_test": "pkl_mirror_test.pkl"
+  "pkl_mirror_train": "mirror_train_data.pkl",
+  "pkl_mirror_test": "mirror_test_data.pkl"
 }

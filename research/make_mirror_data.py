@@ -157,13 +157,13 @@ def make_mirror_data(mirror_params):
 
     # 訓練データの作成
     print("Make train data!\n")
-    train_mirror_data = _make_mirror_data(mirror_params["shape"], is_train=True)
+    mirror_train_data = _make_mirror_data(mirror_params["shape"], is_train=True)
 
     # テストデータの作成
     print("Make test data!\n")
-    test_mirror_data = _make_mirror_data(mirror_params["shape"], is_train=False)
+    mirror_test_data = _make_mirror_data(mirror_params["shape"], is_train=False)
 
-    return train_mirror_data, test_mirror_data
+    return mirror_train_data, mirror_test_data
 
 
 def main_make_mirror_data():
@@ -178,13 +178,13 @@ def main_make_mirror_data():
     with open(result_folder + name_json_mirror_params, "w") as f:
         json.dump(mirror_params, f, indent=2)
 
-    train_mirror_data, test_mirror_data = make_mirror_data(mirror_params)
+    mirror_train_data, mirror_test_data = make_mirror_data(mirror_params)
 
     with open(result_folder + mirror_params["pkl_mirror_train"], "wb") as f:
-        pickle.dump(train_mirror_data, f)
+        pickle.dump(mirror_train_data, f)
         print("output: ", mirror_params["pkl_mirror_train"])
     with open(result_folder + mirror_params["pkl_mirror_test"], "wb") as f:
-        pickle.dump(test_mirror_data, f)
+        pickle.dump(mirror_test_data, f)
         print("output: ", mirror_params["pkl_mirror_test"], "\n")
 
     print("Build {} folder\n".format(result_folder))
@@ -204,13 +204,13 @@ if __name__ == "__main__":
     with open(result_folder + name_json_mirror_params, "w") as f:
         json.dump(mirror_params, f, indent=2)
 
-    train_mirror_data, test_mirror_data = make_mirror_data(mirror_params)
+    mirror_train_data, mirror_test_data = make_mirror_data(mirror_params)
 
     with open(result_folder + mirror_params["pkl_mirror_train"], "wb") as f:
-        pickle.dump(train_mirror_data, f)
+        pickle.dump(mirror_train_data, f)
         print("output: ", mirror_params["pkl_mirror_train"])
     with open(result_folder + mirror_params["pkl_mirror_test"], "wb") as f:
-        pickle.dump(test_mirror_data, f)
+        pickle.dump(mirror_test_data, f)
         print("output: ", mirror_params["pkl_mirror_test"], "\n")
 
     print("Build {} folder\n".format(result_folder))

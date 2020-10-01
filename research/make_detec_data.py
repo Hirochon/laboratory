@@ -95,16 +95,16 @@ def _make_detec_data(detec_params, mirror_data):
     return detec_data
 
 
-def make_detec_data(detec_params, train_mirror_data, test_mirror_data):
+def make_detec_data(detec_params, mirror_train_data, mirror_test_data):
     print("Make train data!\n")
-    train_detec_data = _make_detec_data(detec_params, train_mirror_data)
+    detec_train_data = _make_detec_data(detec_params, mirror_train_data)
     print("Complete train data!!")
 
     print("Make test data!\n")
-    test_detec_data = _make_detec_data(detec_params, test_mirror_data)
+    detec_test_data = _make_detec_data(detec_params, mirror_test_data)
     print("Complete test data!!")
 
-    return train_detec_data, test_detec_data
+    return detec_train_data, detec_test_data
 
 
 def main_make_detec_data(result_folder):
@@ -126,17 +126,17 @@ def main_make_detec_data(result_folder):
 
     # mirrorのデータをロード
     with open(result_folder + mirror_params["pkl_mirror_train"], "rb") as f:
-        train_mirror_data = pickle.load(f)
+        mirror_train_data = pickle.load(f)
     with open(result_folder + mirror_params["pkl_mirror_test"], "rb") as f:
-        test_mirror_data = pickle.load(f)
+        mirror_test_data = pickle.load(f)
 
-    train_detec_data, test_detec_data = make_detec_data(detec_params, train_mirror_data, test_mirror_data)
+    detec_train_data, detec_test_data = make_detec_data(detec_params, mirror_train_data, mirror_test_data)
 
     with open(result_folder + detec_params["pkl_detec_train"], "wb") as f:
-        pickle.dump(train_detec_data, f)
+        pickle.dump(detec_train_data, f)
         print("output: ", detec_params["pkl_detec_train"])
     with open(result_folder + detec_params["pkl_detec_test"], "wb") as f:
-        pickle.dump(test_detec_data, f)
+        pickle.dump(detec_test_data, f)
         print("output: ", detec_params["pkl_detec_test"])
 
     print("Build {} folder\n".format(result_folder))
@@ -163,17 +163,17 @@ if __name__ == "__main__":
 
     # mirrorのデータをロード
     with open(result_folder + mirror_params["pkl_mirror_train"], "rb") as f:
-        train_mirror_data = pickle.load(f)
+        mirror_train_data = pickle.load(f)
     with open(result_folder + mirror_params["pkl_mirror_test"], "rb") as f:
-        test_mirror_data = pickle.load(f)
+        mirror_test_data = pickle.load(f)
 
-    train_detec_data, test_detec_data = make_detec_data(detec_params, train_mirror_data, test_mirror_data)
+    detec_train_data, detec_test_data = make_detec_data(detec_params, mirror_train_data, mirror_test_data)
 
     with open(result_folder + detec_params["pkl_detec_train"], "wb") as f:
-        pickle.dump(train_detec_data, f)
+        pickle.dump(detec_train_data, f)
         print("output: ", detec_params["pkl_detec_train"])
     with open(result_folder + detec_params["pkl_detec_test"], "wb") as f:
-        pickle.dump(test_detec_data, f)
+        pickle.dump(detec_test_data, f)
         print("output: ", detec_params["pkl_detec_test"])
 
     print("Build {} folder\n".format(result_folder))
