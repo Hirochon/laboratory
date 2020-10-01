@@ -215,7 +215,7 @@ def make_mirror_data(mirror_params):
     trainかtestかを分けるためだけの関数。
     これにより同じ処理を複数回書かずに済む。
 
-    引数は戻り値とほぼ同じなので省略。
+    引数と戻り値は`_make_mirror_data`とほぼ同じなので省略。
     
     """
 

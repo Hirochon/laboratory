@@ -101,6 +101,17 @@ def reflect_detector(xx, yy, zz, detec_params):
 
 
 def _make_detec_data(detec_params, mirror_data):
+    """ミラーで反射させ、観測したデータをまとめる関数
+
+    Args:
+        detec_params (dict{...}): `params_making_detec_data.json`のパラメータそのまま
+        mirror_data (dict{elip: list[], mode: list[]}): `make_mirror_data.py`で作成したミラーデータそのまま
+
+    Returns:
+        detec_data (list[dict{z:~, shape:~, info:~}]): ミラーで反射させ、観測したデータ
+    
+    """
+
     detec_data = []
     (x, y, z, shape, info) = mod_mirror_data(mirror_data)
 
@@ -117,6 +128,15 @@ def _make_detec_data(detec_params, mirror_data):
 
 
 def make_detec_data(detec_params, mirror_train_data, mirror_test_data):
+    """ミラー作成関数(trainとtestのデータを作ることに集中する関数)
+    
+    trainかtestかを分けるためだけの関数。
+    これにより同じ処理を複数回書かずに済む。
+
+    引数と戻り値は`_make_mirror_data`とほぼ同じなので省略。
+    
+    """
+
     print("Make train data!\n")
     detec_train_data = _make_detec_data(detec_params, mirror_train_data)
     print("Complete train data!!")
@@ -129,6 +149,15 @@ def make_detec_data(detec_params, mirror_train_data, mirror_test_data):
 
 
 def main_make_detec_data(result_folder):
+    """`make_detec_data.py`の基幹となる場所。主にファイルの読み込み/書き込み。
+
+    make_data.pyと連携して`make_mirror_data.py`と一括で実行する際に通る道。
+
+    Args:
+        result_folder (str): `make_mirror_data.py`で作成したフォルダ名
+
+    """
+
     start_folder = "./run_instruments/"
     name_json_mirror_params = "params_making_mirror_data.json"
     name_json_detec_params = "params_making_detec_data.json"
@@ -164,6 +193,8 @@ def main_make_detec_data(result_folder):
 
 
 if __name__ == "__main__":
+    """ミラーのデータのみ作る際に使う(デバッグ用)"""
+
     start_folder = "./run_instruments/"
     name_json_mirror_params = "params_making_mirror_data.json"
     name_json_detec_params = "params_making_detec_data.json"
