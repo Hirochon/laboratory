@@ -9,7 +9,29 @@ from file_operation import make_dir
 
 
 def make_elip_param_list(elip_params, data_num):
-    """ミラー毎の楕円のパラメータをランダム作成関数"""
+    """与えられた範囲内でパラメータをランダムに作成するための関数
+    
+    ミラーの作成にて楕円の形を作り出すため
+    `params_making_mirror_data.json`で決められたパラメータの範囲指定に従って、
+    パラメータをランダムで作成致します。
+
+    Args:
+        elip_params (dict): `params_making_mirror_data.json`により範囲を指定されたパラメータの辞書群。
+        data_num (int): ミラーの数。
+    
+    Returns:
+        param_list (list[list[int]]): init_elip_len_x_list, init_elip_len_y_list, init_coord_x_list, init_coord_y_list, init_theta_listが入ったリスト
+        ellipse_nums (list[int]): ミラー毎の楕円の数
+        elip_params["axis_x"] (int): xに関して範囲-0.5〜0.5に対してどれだけ範囲を広くするか
+        elip_params["axis_y"] (int): yに関して範囲-0.5〜0.5に対してどれだけ範囲を広くするか
+        elip_params["nx"] (int): (-0.5〜0.5)*axis_xをどれだけ細分化するか
+        elip_params["ny"] (int): (-0.5〜0.5)*axis_yをどれだけ細分化するか
+
+    Note:
+        np.random.randint(0, 1) → 0しか出力しない
+        np.random.randint(1, 3) → 1と2を出力
+
+    """
 
     ellipse_nums = []
     param_list = []
@@ -30,7 +52,11 @@ def make_elip_param_list(elip_params, data_num):
 
 
 def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list, axis_x, axis_y, ellipse_num, nx, ny):
-    """楕円毎に与えられたパラメータに従って楕円を描いていく"""
+    """楕円毎に与えられたパラメータに従って楕円を描いていく
+    
+    Args
+    
+    """
     
     elip_spot_mirror = np.zeros([axis_x, axis_y])
     
@@ -50,8 +76,8 @@ def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_
                 if x_formula + y_formula <= 1:
                     elip_spot_mirror[j, i] += np.exp(-(X**2/elip_len_x_list[k]**2)-(Y**2/elip_len_y_list[k]**2))
 
-    xx = np.linspace(-0.5, 0.5, nx) * axis_x    # -0.5〜0.5間でaxis_x個に分けて、axis_xでブロードキャスト
-    yy = np.linspace(-0.5, 0.5, ny) * axis_y    # -0.5〜0.5間でaxis_y個に分けて、axis_yでブロードキャスト
+    xx = np.linspace(-0.5, 0.5, nx) * axis_x    # -0.5〜0.5間でnx個に分けて、axis_xでブロードキャスト
+    yy = np.linspace(-0.5, 0.5, ny) * axis_y    # -0.5〜0.5間でnx個に分けて、axis_yでブロードキャスト
     x, y = np.meshgrid(xx, yy, indexing="ij")   # 2次元配列としてxとyをそれぞれ用意
 
     if (nx != axis_x) or (ny != axis_y):    # 想定した枠と分割する個数が異なる場合に、画素を拡大/縮小させることにより、対応。
