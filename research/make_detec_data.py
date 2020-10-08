@@ -11,17 +11,17 @@ from propagation_mod import (
     SELECT_MATRIX_TYPE,
     WAVE_MAT_CAL,
     SELECT_ADD_NOISE
-    )
+)
 
 
 def mod_mirror_data(mirror_data):
     """ロードしたミラーのデータを変形する関数
-    
+
     `make_mirror_data.py`で作成したデータを`make_detec_data.py`にとって扱いやすくさせる処理
 
     Args:
-        mirror_data (dict{elip: list[...], mode: list[...],}): ミラーデータが入ってます。
-    
+        mirror_data (dict{elip: list[...], mode: list[...],}): ミラーデータが入ってます
+
     Returns:
         np_x (ndarray[[[float]]]): xの値
         np_y (ndarray[[[float]]]): yの値
@@ -31,7 +31,7 @@ def mod_mirror_data(mirror_data):
 
     Note:
         前回のバージョンより、append時に[]を一段階抜いています。
-    
+
     """
 
     elip_mirror_data = mirror_data["elip"]
@@ -58,13 +58,13 @@ def mod_mirror_data(mirror_data):
             z.append(row["z"])
             shape.append("mode")
             info.append(row["info"])
-        
+
     np_x = np.array(x)
     np_y = np.array(y)
     np_z = np.array(z)
     np_shape = np.array(shape)
     np_info = np.array(info)
-    
+
     return np_x, np_y, np_z, np_shape, np_info
 
 
@@ -85,7 +85,7 @@ def reflect_detector(xx, yy, zz, detec_params):
     g0 = WAVE_MAT_CAL(H, f, divs=None)  # g0 = Hf
     g = SELECT_ADD_NOISE(g0, noise_level, detec_params)  # g = g0 + noise
 
-    #fig,ax = plt.subplots(1,1)
+    # fig,ax = plt.subplots(1,1)
     # ax.imshow(np.imag(g).reshape((20,20)))
     # plt.show()
 
@@ -95,7 +95,7 @@ def reflect_detector(xx, yy, zz, detec_params):
 
     # CHECK_3D_PROFILE(detect_cords,np.real(g),"g_real","")
     # CHECK_3D_PROFILE(detect_cords,np.imag(g),"g_imag","")
-    #CHECK_3D_PROFILE(detect_cords,np.abs(g), "g_abs","")
+    # CHECK_3D_PROFILE(detect_cords,np.abs(g), "g_abs","")
 
     return g
 

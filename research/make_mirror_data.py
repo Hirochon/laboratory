@@ -90,7 +90,7 @@ def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_
                 y_formula = Y**2 / elip_len_y_list[k]**2    # 楕円の方程式のyとb部分
 
                 if x_formula + y_formula <= 1:
-                    elip_spot_mirror[j, i] += np.exp(-(X**2/elip_len_x_list[k]**2)-(Y**2/elip_len_y_list[k]**2))    # ガウス分布
+                    elip_spot_mirror[j, i] += np.exp(-(X**2 / elip_len_x_list[k]**2) - (Y**2 / elip_len_y_list[k]**2))    # ガウス分布
 
     xx = np.linspace(-0.5, 0.5, nx) * axis_x    # -0.5〜0.5間でnx個に分けて、axis_xでブロードキャスト
     yy = np.linspace(-0.5, 0.5, ny) * axis_y    # -0.5〜0.5間でnx個に分けて、axis_yでブロードキャスト
@@ -98,7 +98,7 @@ def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_
 
     if (nx != axis_x) or (ny != axis_y):    # 想定した枠と分割する個数が異なる場合に、画素を拡大/縮小させることにより、対応。
         Imaged_elip_spot_mirror = Image.fromarray(elip_spot_mirror)
-        resized_elip_spot_mirror = np.asarray(Imaged_elip_spot_mirror.resize((nx,ny)))
+        resized_elip_spot_mirror = np.asarray(Imaged_elip_spot_mirror.resize((nx, ny)))
         third_dim_elip_spot_mirror = {"x": x, "y": y, "z": resized_elip_spot_mirror}
     else:
         third_dim_elip_spot_mirror = {"x": x, "y": y, "z": elip_spot_mirror}
