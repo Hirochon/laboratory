@@ -26,6 +26,7 @@ def make_elip_param_list(elip_params, data_num):
         elip_params["axis_y"] (int): yに関して範囲-0.5〜0.5に対してどれだけ範囲を広くするか
         elip_params["nx"] (int): (-0.5〜0.5)*axis_xをどれだけ細分化するか
         elip_params["ny"] (int): (-0.5〜0.5)*axis_yをどれだけ細分化するか
+        elip_params["noise"] (float): noiseの最大値を決める
 
     Note:
         np.random.randint(0, 1) → 0しか出力しない
@@ -48,10 +49,10 @@ def make_elip_param_list(elip_params, data_num):
 
         param_list.append(np.array([init_elip_len_x_list, init_elip_len_y_list, init_coord_x_list, init_coord_y_list, init_theta_list]))
         
-    return param_list, ellipse_nums, elip_params["axis_x"], elip_params["axis_y"], elip_params["nx"], elip_params["ny"]
+    return param_list, ellipse_nums, elip_params["axis_x"], elip_params["axis_y"], elip_params["nx"], elip_params["ny"], elip_params["noise"]
 
 
-def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list, axis_x, axis_y, ellipse_num, nx, ny):
+def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list, axis_x, axis_y, ellipse_num, nx, ny, noise):
     """ミラー毎に楕円(z)とx,yの値を入れていく
     
     ①楕円毎に与えられたパラメータに従って楕円を描いていく
@@ -68,6 +69,7 @@ def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_
         axis_y: yの0.5に対しての大きさ
         nx: -axis_x〜axis_xまでをnx個に細分化
         ny: -axis_y〜axis_yまでをny個に細分化
+        noise: zへ追加するnoiseの最大値
 
     Returns:
         third_dim_elip_spot_mirror (dict{x: list[[float]], y: list[[float]], z: list[[float]]}): xとyとミラー(楕円)の値(高さ)
@@ -102,6 +104,8 @@ def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_
         third_dim_elip_spot_mirror = {"x": x, "y": y, "z": resized_elip_spot_mirror}
     else:
         third_dim_elip_spot_mirror = {"x": x, "y": y, "z": elip_spot_mirror}
+
+    third_dim_elip_spot_mirror["z"] += noise * np.random.randn(nx, ny)
 
     return third_dim_elip_spot_mirror
 
@@ -169,14 +173,14 @@ def _make_mirror_data(mirror_params, is_train):
         print("===Type Ellipse start===")
 
         # 楕円作成のパラメータをランダムに作成
-        elip_param_list, ellipse_nums, axis_x, axis_y, nx, ny = make_elip_param_list(mirror_params["elip"], elip_data_num)
+        elip_param_list, ellipse_nums, axis_x, axis_y, nx, ny, noise = make_elip_param_list(mirror_params["elip"], elip_data_num)
 
         # make_elip_param_listで作成したパラメータを元に楕円型ミラーデータを作成
         for [elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list], ellipse_num in tqdm(zip(elip_param_list, ellipse_nums), total=elip_data_num):
-            elip_spot_mirror = make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list, axis_x, axis_y, ellipse_num, nx, ny)
+            elip_spot_mirror = make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list, axis_x, axis_y, ellipse_num, nx, ny, noise)
             elip_spot_mirror_params = {"elip_len_x_list": elip_len_x_list, "elip_len_y_list": elip_len_y_list,
                                        "coord_x_list": coord_x_list, "coord_y_list": coord_y_list, "theta_list": theta_list,
-                                       "axis_x": axis_x, "axis_y": axis_y, "ellipse_num": ellipse_num, "nx": nx, "ny": ny}
+                                       "axis_x": axis_x, "axis_y": axis_y, "ellipse_num": ellipse_num, "nx": nx, "ny": ny, "noise": noise}
             elip_spot_mirror.update({"info": elip_spot_mirror_params})
             elip_mirror_data.append(elip_spot_mirror)
         print("===Type Ellipse end===\n")
