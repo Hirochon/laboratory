@@ -639,6 +639,19 @@ def main_make_figs(file_x, file_y, sfolder, num_data=0):
     (x, y, t) = load_data(file_x, file_y, num_data=num_data)
 
 
+def seed_everything(seed=42):
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    np.random.seed(seed)
+    tf.random.set_seed(seed)
+    session_conf = tf.compat.v1.ConfigProto(
+        intra_op_parallelism_threads=1,
+        inter_op_parallelism_threads=1
+    )
+    sess = tf.compat.v1.Session(graph=tf.compat.v1.get_default_graph(), config=session_conf)
+    tf.compat.v1.keras.backend.set_session(sess)
+
+
 def main(data_folder, num_data, active_function="relu", sfolder="", reshape_type="abs_phase", num_conv_node=50):
     strtime = datetime.now().strftime("%Y%m%d%H%M" + "-" + "%S")
     print("")
@@ -664,6 +677,8 @@ def main(data_folder, num_data, active_function="relu", sfolder="", reshape_type
     # main_regression_learn(file_train_x,file_train_y,
     #                       file_test_x, file_test_y,
     #                       sfolder,num_data=num_data)
+
+    seed_everything(43)
 
     main_regression_CNN_learn(file_train_x, file_train_y,
                               file_test_x, file_test_y, sfolder,
