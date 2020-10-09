@@ -49,10 +49,10 @@ def make_elip_param_list(elip_params, data_num):
 
         param_list.append(np.array([init_elip_len_x_list, init_elip_len_y_list, init_coord_x_list, init_coord_y_list, init_theta_list]))
         
-    return param_list, ellipse_nums, elip_params["axis_x"], elip_params["axis_y"], elip_params["nx"], elip_params["ny"], elip_params["noise"]
+    return param_list, ellipse_nums, elip_params["axis_x"], elip_params["axis_y"], elip_params["nx"], elip_params["ny"], elip_params["amp"], elip_params["noise_rate"]
 
 
-def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list, axis_x, axis_y, ellipse_num, nx, ny, noise):
+def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list, axis_x, axis_y, ellipse_num, nx, ny, amp, noise_rate):
     """ミラー毎に楕円(z)とx,yの値を入れていく
     
     ①楕円毎に与えられたパラメータに従って楕円を描いていく
@@ -92,7 +92,7 @@ def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_
                 y_formula = Y**2 / elip_len_y_list[k]**2    # 楕円の方程式のyとb部分
 
                 if x_formula + y_formula <= 1:
-                    elip_spot_mirror[j, i] += np.exp(-(X**2 / elip_len_x_list[k]**2) - (Y**2 / elip_len_y_list[k]**2))    # ガウス分布
+                    elip_spot_mirror[j, i] += amp * np.exp(-(X**2 / elip_len_x_list[k]**2) - (Y**2 / elip_len_y_list[k]**2))    # ガウス分布*amplitude(最大値)
 
     xx = np.linspace(-0.5, 0.5, nx) * axis_x    # -0.5〜0.5間でnx個に分けて、axis_xでブロードキャスト
     yy = np.linspace(-0.5, 0.5, ny) * axis_y    # -0.5〜0.5間でnx個に分けて、axis_yでブロードキャスト
@@ -105,14 +105,14 @@ def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_
     else:
         third_dim_elip_spot_mirror = {"x": x, "y": y, "z": elip_spot_mirror}
 
+    noise = amp * noise_rate
     third_dim_elip_spot_mirror["z"] += noise * np.random.randn(nx, ny)
 
     return third_dim_elip_spot_mirror
 
 
-def make_mode_spot_mirror(nx=16, ny=16, m=1, n=1, axis_x=1., axis_y=1., amp=1., noise=0):
+def make_mode_spot_mirror(nx=16, ny=16, m=1, n=1, axis_x=1., axis_y=1., amp=1., noise_rate=0):
     """ミラー毎に線上のシマシマ作成&代入
-
     """
 
     xx = np.linspace(-0.5, 0.5, nx) * axis_x
@@ -132,7 +132,8 @@ def make_mode_spot_mirror(nx=16, ny=16, m=1, n=1, axis_x=1., axis_y=1., amp=1., 
     ax[2].imshow(np.imag(oi))
     plt.show()
     """
-    oi = oi + noise * np.random.randn(nx, ny)
+    noise = amp * noise_rate
+    oi += noise * np.random.randn(nx, ny)
     return x, y, np.real(oi)
 
 
@@ -157,7 +158,9 @@ def _make_mirror_data(mirror_params, is_train):
     mirror_params["elip"]["axis_y"] = mirror_params["mode"]["axis_y"] = mirror_params["common"]["axis_y"]
     mirror_params["elip"]["nx"] = mirror_params["mode"]["nx"] = mirror_params["common"]["nx"]
     mirror_params["elip"]["ny"] = mirror_params["mode"]["ny"] = mirror_params["common"]["ny"]
-    
+    mirror_params["elip"]["amp"] = mirror_params["mode"]["amp"] = mirror_params["common"]["amp"]
+    mirror_params["elip"]["noise_rate"] = mirror_params["mode"]["noise_rate"] = mirror_params["common"]["noise_rate"]
+
     if is_train:
         elip_data_num = mirror_params["elip"]["train_num"]
         mode_data_num = mirror_params["mode"]["train_num"]
@@ -173,14 +176,14 @@ def _make_mirror_data(mirror_params, is_train):
         print("===Type Ellipse start===")
 
         # 楕円作成のパラメータをランダムに作成
-        elip_param_list, ellipse_nums, axis_x, axis_y, nx, ny, noise = make_elip_param_list(mirror_params["elip"], elip_data_num)
+        elip_param_list, ellipse_nums, axis_x, axis_y, nx, ny, amp, noise_rate = make_elip_param_list(mirror_params["elip"], elip_data_num)
 
         # make_elip_param_listで作成したパラメータを元に楕円型ミラーデータを作成
         for [elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list], ellipse_num in tqdm(zip(elip_param_list, ellipse_nums), total=elip_data_num):
-            elip_spot_mirror = make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list, axis_x, axis_y, ellipse_num, nx, ny, noise)
+            elip_spot_mirror = make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_y_list, theta_list, axis_x, axis_y, ellipse_num, nx, ny, amp, noise_rate)
             elip_spot_mirror_params = {"elip_len_x_list": elip_len_x_list, "elip_len_y_list": elip_len_y_list,
                                        "coord_x_list": coord_x_list, "coord_y_list": coord_y_list, "theta_list": theta_list,
-                                       "axis_x": axis_x, "axis_y": axis_y, "ellipse_num": ellipse_num, "nx": nx, "ny": ny, "noise": noise}
+                                       "axis_x": axis_x, "axis_y": axis_y, "ellipse_num": ellipse_num, "nx": nx, "ny": ny, "amp": amp, "noise_rate": noise_rate}
             elip_spot_mirror.update({"info": elip_spot_mirror_params})
             elip_mirror_data.append(elip_spot_mirror)
         print("===Type Ellipse end===\n")
@@ -199,7 +202,7 @@ def _make_mirror_data(mirror_params, is_train):
             print(m, n)
             for _ in tqdm(range(mode_data_num)):
                 x, y, z = make_mode_spot_mirror(m=m, n=n, nx=mode_params["nx"], ny=mode_params["ny"], axis_x=mode_params["axis_x"],
-                                                axis_y=mode_params["axis_y"], amp=mode_params["amp"], noise=mode_params["noise"])
+                                                axis_y=mode_params["axis_y"], amp=mode_params["amp"], noise_rate=mode_params["noise_rate"])
                 row = {"x": x, "y": y, "z": z}
                 mode_spot_mirror_params = {"m": m, "n": n}
                 row.update({"info": mode_spot_mirror_params})

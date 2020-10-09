@@ -1,15 +1,17 @@
 {
-  "dir_name": "ml_yattemita",
+  "dir_name": "add_amp_noise_rate",
   "shape": {
     "common": {
       "nx": 64,
       "ny": 64,
       "axis_x": 64,
-      "axis_y": 64
+      "axis_y": 64,
+      "amp": 3.0,
+      "noise_rate": 0.05
     },
     "elip": {
-      "train_num": 100,
-      "test_num": 10,
+      "train_num": 16,
+      "test_num": 0,
       "elip_num_min": 1,
       "elip_num_max": 2,
       "elip_len_x_min": 1,
@@ -20,17 +22,14 @@
       "coord_x_max": 65,
       "coord_y_min": 1,
       "coord_y_max": 65,
-      "theta_rate": 1,
-      "noise": 0.0
+      "theta_rate": 1
     },
     "mode": {
       "train_num": 0,
       "test_num": 0,
       "center": [0,0,0],
       "max_m": 1,
-      "max_n": 1,
-      "noise": 0.0,
-      "amp": 1.0
+      "max_n": 1
     }
   },
   "pkl_mirror_train": "mirror_train_data.pkl",
