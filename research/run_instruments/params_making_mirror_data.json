@@ -1,5 +1,5 @@
 {
-  "dir_name": "add_noise_paramator",
+  "dir_name": "ml_yattemita",
   "shape": {
     "common": {
       "nx": 64,
@@ -8,8 +8,8 @@
       "axis_y": 64
     },
     "elip": {
-      "train_num": 4,
-      "test_num": 1,
+      "train_num": 100,
+      "test_num": 10,
       "elip_num_min": 1,
       "elip_num_max": 2,
       "elip_len_x_min": 1,

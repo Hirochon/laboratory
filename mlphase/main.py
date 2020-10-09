@@ -9,6 +9,7 @@ import pickle
 from datetime import datetime
 # import itertools
 import matplotlib.pyplot as plt
+import random
 
 from making_2D_image_20191028 import load_data
 # from making_2D_image_20191028 import surf_figure, reduce_pkl_data
@@ -18,15 +19,17 @@ from making_2D_image_20191028 import load_data
 # from dataset.mnist import load_mnist
 # import matplotlib as mpl
 
+import tensorflow as tf
+
 from keras.utils import np_utils, plot_model
 from keras.models import Sequential, Model
-from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D
-from keras.callbacks import CSVLogger
+from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout
+from keras.callbacks import CSVLogger, EarlyStopping
 # from keras.datasets import mnist
 # from keras.layers import Activation, Dropout, Reshape, SeparableConv2D
 # from keras.callbacks import EarlyStopping
 
-from file_operation import MAKE_DIR, COPY_FILES
+# from file_operation import MAKE_DIR, COPY_FILES
 
 
 sys.path.append(os.pardir)
@@ -313,12 +316,12 @@ def save_history(history, file_train, sfolder):
 
 
 def histroy_fig(history, file_train, sfolder):
-    epochs = range(len(history.history['acc']))
+    epochs = range(len(history.history['accuracy']))
     plt.figure(figsize=(10, 5))
     plt.subplot(1, 2, 1)
-    plt.plot(epochs, history.history['acc'], label='training')
-    plt.plot(epochs, history.history['val_acc'], label='validation')
-    plt.title('acc')
+    plt.plot(epochs, history.history['accuracy'], label='training')
+    plt.plot(epochs, history.history['val_accuracy'], label='validation')
+    plt.title('accuracy')
     plt.legend()
     plt.subplot(1, 2, 2)
     plt.plot(epochs, history.history['loss'], label='training')
@@ -535,20 +538,23 @@ def regressin_CNN(x, y, xt, yt, num_data, units, sfolder, epochs=100,
     print("check point 1")
     for s in [x, y, xt, yt]:
         print(np.shape(s))
- 
+
     active_func = active_function
     # "relu" # "tanh" # "linear" # "sigmoid" # # "relu", "sigmoid", "tanh",
 
     ncn = num_conv_node
 
     model = Sequential()
-    model.add(Conv2D(ncn, (6, 6), activation=active_func, padding="same", data_format="channels_first"))
-    model.add(MaxPooling2D(pool_size=(3, 3), data_format="channels_first"))
+    model.add(Conv2D(ncn, (3, 3), activation=active_func, padding="same"))
+    # model.add(Conv2D(ncn, (3, 3), activation=active_func, padding="same"))
+    # model.add(Conv2D(ncn, (6, 6), activation=active_func, padding="same", data_format="channels_first"))
+    # model.add(MaxPooling2D(pool_size=(3, 3), data_format="channels_first"))
+    # model.add(MaxPooling2D(pool_size=(2, 2)))
+    
     model.add(Flatten())
 
-    for unit in units:
-        model.add(Dense(unit, activation=active_func))
-        # model.add(Dropout(0.2))
+    model.add(Dense(8192, activation=active_func))
+    model.add(Dropout(0.2))
     # try:
     #     for unit in units:
     #         model.add(Dense(unit, activation=active_func))
@@ -556,7 +562,7 @@ def regressin_CNN(x, y, xt, yt, num_data, units, sfolder, epochs=100,
     # except:
     #     pass
 
-    model.add(Dense(out_dim))
+    model.add(Dense(out_dim, activation="sigmoid"))
 
     model.compile(optimizer='rmsprop',
                   loss='mean_squared_error',
@@ -566,15 +572,18 @@ def regressin_CNN(x, y, xt, yt, num_data, units, sfolder, epochs=100,
                         y=y,
                         epochs=epochs,
                         validation_data=(xt, yt),
-                        verbose=1)
+                        verbose=1,
+                        callbacks=[EarlyStopping(patience=20, verbose=1)])
     y_pred = model.predict(xt)
+
+    # print(history.history)
 
     file = "learning"
     histroy_fig(history, file, sfolder)
-    save_history(history, file, sfolder)
-    save_model(model, file, sfolder)
-    save_components_fit(yt, y_pred, sfolder)
-    save_components_fit_9(yt, y_pred, sfolder)
+    # save_history(history, file, sfolder)
+    # save_model(model, file, sfolder)
+    # save_components_fit(yt, y_pred, sfolder)
+    # save_components_fit_9(yt, y_pred, sfolder)
 
     score = model.evaluate(x=xt, y=yt)
     err = np.sqrt(np.mean((yt - y_pred) ** 2))
@@ -660,15 +669,15 @@ def main(data_folder, num_data, active_function="relu", sfolder="", reshape_type
     # 保存フォルダの指定,時刻がフォルダの名前になる
     if not sfolder:
         sfolder = strtime
+        os.makedirs(sfolder)
+    else:
+        sfolder = data_folder
 
-    MAKE_DIR(sfolder)   # 保存フォルダの作成
-    COPY_FILES(sfolder, ["py", "json"])   # 実行プログラムソースコードのバックアップ
+    file_train_y = data_folder + "/" + "mirror_train_data.pkl"
+    file_train_x = data_folder + "/" + "detec_train_data.pkl"
 
-    file_train_y = folder + "/" + "mirror_train_data.pkl"
-    file_train_x = folder + "/" + "detec_train_data.pkl"
-
-    file_test_y = folder + "/" + "mirror_test_data.pkl"
-    file_test_x = folder + "/" + "detec_test_data.pkl"
+    file_test_y = data_folder + "/" + "mirror_test_data.pkl"
+    file_test_x = data_folder + "/" + "detec_test_data.pkl"
 
     # main_make_figs(file_train_x,file_train_y,sfolder,num_data=num_data)
 
@@ -689,7 +698,7 @@ def main(data_folder, num_data, active_function="relu", sfolder="", reshape_type
 
 
 if __name__ == '__main__':
-    folder = "result/2020_1008_100022_add_noise_paramator"
+    folder = "result/2020_1008_204550_ml_yattemita"
     num_data = 4
     
     # for af, mode, ncn in itertools.product(["relu", "linear", "tanh", "sigmoid"], ["abs_phase", "abs", "real_imag"], [100]):
