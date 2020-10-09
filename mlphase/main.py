@@ -261,7 +261,7 @@ def main_learn(file_train, file_test, sfolder, num_data):
                         callbacks=[csv_logger]
                         )
 
-    histroy_fig(history, file_train, sfolder)
+    history_fig(history, file_train, sfolder)
     save_history(history, file_train, sfolder)
     save_model(model, file_train, sfolder)
 
@@ -317,7 +317,7 @@ def save_history(history, file_train, sfolder):
         pickle.dump(history, f)
 
 
-def histroy_fig(history, file_train, sfolder):
+def history_fig(history, file_train, sfolder):
     epochs = range(len(history.history['accuracy']))
     plt.figure(figsize=(10, 5))
     plt.subplot(1, 2, 1)
@@ -329,6 +329,7 @@ def histroy_fig(history, file_train, sfolder):
     plt.plot(epochs, history.history['loss'], label='training')
     plt.plot(epochs, history.history['val_loss'], label='validation')
     plt.title('loss')
+    plt.ylim([0, 0.15])
     plt.legend()
     plt.savefig(sfolder + "/" + os.path.basename(file_train).split(".")[0] + '.png')
 
@@ -536,6 +537,11 @@ def regressin_CNN(x, y, xt, yt, num_data, units, sfolder, epochs=100,
     xt = np.array(xt)
     yt = np.array(yt)
 
+    x = np.transpose(x, (0, 2, 3, 1))
+    xt = np.transpose(xt, (0, 2, 3, 1))
+    y = np.transpose(y, (0, 2, 3, 1))
+    yt = np.transpose(yt, (0, 2, 3, 1))
+
     print("")
     print("check point 3")
     for s in [x, y, xt, yt]:
@@ -557,18 +563,22 @@ def regressin_CNN(x, y, xt, yt, num_data, units, sfolder, epochs=100,
     # ncn = num_conv_node
 
     model = Sequential()
-    model.add(Input(shape=(2, 16, 16)))
-    model.add(Conv2D(64, (3, 3), activation="relu", padding="same"))
+    model.add(Input(shape=(16, 16, 2)))
+    model.add(Conv2D(32, (3, 3), activation="relu", padding="same"))
     # model.add(MaxPooling2D(pool_size=(2, 2)))
     # model.add(Conv2D(ncn, (6, 6), activation=active_func, padding="same", data_format="channels_first"))
     # model.add(MaxPooling2D(pool_size=(3, 3), data_format="channels_first"))
     
     model.add(Flatten())
 
-    # model.add(Dense(8192, activation="relu"))
+    # model.add(Dense(50, activation="relu"))
+    # model.add(Dense(50, activation="relu"))
+    # model.add(Dense(50, activation="relu"))
+
+    model.add(Dense(4096, activation="relu"))
     # model.add(Dropout(0.2))
 
-    model.add(Dense(out_dim, activation="sigmoid"))
+    model.add(Dense(out_dim))
 
     model.compile(optimizer='rmsprop',
                   loss='mean_squared_error',
@@ -579,13 +589,14 @@ def regressin_CNN(x, y, xt, yt, num_data, units, sfolder, epochs=100,
                         epochs=epochs,
                         validation_data=(xt, yt),
                         verbose=1,
-                        callbacks=[EarlyStopping(patience=20, verbose=1)])
+                        callbacks=[EarlyStopping(patience=20, verbose=1)]
+                        )
     y_pred = model.predict(xt)
 
     # print(history.history)
 
     file = "learning"
-    histroy_fig(history, file, sfolder)
+    history_fig(history, file, sfolder)
     # save_history(history, file, sfolder)
     save_model(model, file, sfolder)
     # save_components_fit(yt, y_pred, sfolder)
@@ -637,7 +648,7 @@ def regressin_set(x, y, xt, yt, num_data, units, sfolder, epochs=100):
     y_pred = model.predict(xt)
 
     file = "learning"
-    histroy_fig(history, file, sfolder)
+    history_fig(history, file, sfolder)
     save_history(history, file, sfolder)
     save_model(model, file, sfolder)
     save_components_fit(yt, y_pred, sfolder)
