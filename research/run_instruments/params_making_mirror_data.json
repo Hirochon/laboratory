@@ -1,16 +1,16 @@
 {
-  "dir_name": "add_amp_noise_rate",
+  "dir_name": "amp_5_noise_rate_0",
   "shape": {
     "common": {
       "nx": 64,
       "ny": 64,
       "axis_x": 64,
       "axis_y": 64,
-      "amp": 3.0,
-      "noise_rate": 0.05
+      "amp": 5.0,
+      "noise_rate": 0.0
     },
     "elip": {
-      "train_num": 16,
+      "train_num": 4,
       "test_num": 0,
       "elip_num_min": 1,
       "elip_num_max": 2,

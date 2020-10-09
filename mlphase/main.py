@@ -21,9 +21,11 @@ from making_2D_image_20191028 import load_data
 
 import tensorflow as tf
 
-from keras.utils import np_utils, plot_model
+from tensorflow.python.keras.utils.vis_utils import plot_model
+
+from keras.utils import np_utils
 from keras.models import Sequential, Model
-from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout
+from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout, Input
 from keras.callbacks import CSVLogger, EarlyStopping
 # from keras.datasets import mnist
 # from keras.layers import Activation, Dropout, Reshape, SeparableConv2D
@@ -302,14 +304,14 @@ def main_learn(file_train, file_test, sfolder, num_data):
 
         
 def save_model(model, file_train, sfolder):
-    file = sfolder + "/" + os.path.basename(file_train).split(".")[0] + "_model.png"
+    file = sfolder + "/" + "model_tree.png"
     print("save_file:", file)
     plot_model(model, to_file=file, show_shapes=True)
     # model.summary()
 
 
 def save_history(history, file_train, sfolder):
-    file = sfolder + "/" + os.path.basename(file_train).split(".")[0] + "_history.pkl"
+    file = sfolder + "/" + "history.pkl"
     print("save_file:", file)
     with open(file, 'wb') as f:
         pickle.dump(history, f)
@@ -449,8 +451,10 @@ def main_regression_learn(file_x, file_y, file_test_x, file_test_y, sfolder, num
 def main_regression_CNN_learn(file_x, file_y, file_test_x, file_test_y, sfolder, num_data=0,
                               active_function="relu", reshape_type="abs_phase", num_conv_node=50):
     x, y, _ = load_data(file_x, file_y, num_data=num_data)
-    xt, yt, _ = load_data(file_test_x, file_test_y, num_data=100)
+    xt, yt, _ = load_data(file_test_x, file_test_y, num_data=10)
 
+    print("")
+    print("check point 1")
     for s in [x, y, xt, yt]:
         print(np.shape(s))
 
@@ -459,6 +463,8 @@ def main_regression_CNN_learn(file_x, file_y, file_test_x, file_test_y, sfolder,
     xt = reshape_complex(xt, mode=reshape_type, normalize=True)
     yt = reshape_complex(yt, mode=reshape_type, normalize=True)
 
+    print("")
+    print("check point 2")
     for s in [x, y, xt, yt]:
         print(np.shape(s))
 
@@ -512,10 +518,14 @@ def reshape_complex(x, mode="abs_phase", normalize=True):
 
 
 def reshape_complex_to_real_imag(x, axis=1):
+    """RealとImag"""
+
     return np.append(np.real(x), np.imag(x), axis=axis)
 
 
 def reshape_complex_to_abs_phase(x, axis=1):
+    """絶対値と偏角"""
+
     return np.append(np.abs(x), np.angle(x), axis=axis)
 
 
@@ -526,6 +536,8 @@ def regressin_CNN(x, y, xt, yt, num_data, units, sfolder, epochs=100,
     xt = np.array(xt)
     yt = np.array(yt)
 
+    print("")
+    print("check point 3")
     for s in [x, y, xt, yt]:
         print(np.shape(s))
 
@@ -535,32 +547,26 @@ def regressin_CNN(x, y, xt, yt, num_data, units, sfolder, epochs=100,
     yt = yt.reshape(-1, out_dim)
 
     print("")
-    print("check point 1")
+    print("check point 4")
     for s in [x, y, xt, yt]:
         print(np.shape(s))
-
-    active_func = active_function
+        
+    # active_func = active_function
     # "relu" # "tanh" # "linear" # "sigmoid" # # "relu", "sigmoid", "tanh",
 
-    ncn = num_conv_node
+    # ncn = num_conv_node
 
     model = Sequential()
-    model.add(Conv2D(ncn, (3, 3), activation=active_func, padding="same"))
-    # model.add(Conv2D(ncn, (3, 3), activation=active_func, padding="same"))
+    model.add(Input(shape=(2, 16, 16)))
+    model.add(Conv2D(64, (3, 3), activation="relu", padding="same"))
+    # model.add(MaxPooling2D(pool_size=(2, 2)))
     # model.add(Conv2D(ncn, (6, 6), activation=active_func, padding="same", data_format="channels_first"))
     # model.add(MaxPooling2D(pool_size=(3, 3), data_format="channels_first"))
-    # model.add(MaxPooling2D(pool_size=(2, 2)))
     
     model.add(Flatten())
 
-    model.add(Dense(8192, activation=active_func))
-    model.add(Dropout(0.2))
-    # try:
-    #     for unit in units:
-    #         model.add(Dense(unit, activation=active_func))
-    #         # model.add(Dropout(0.2))
-    # except:
-    #     pass
+    # model.add(Dense(8192, activation="relu"))
+    # model.add(Dropout(0.2))
 
     model.add(Dense(out_dim, activation="sigmoid"))
 
@@ -581,7 +587,7 @@ def regressin_CNN(x, y, xt, yt, num_data, units, sfolder, epochs=100,
     file = "learning"
     histroy_fig(history, file, sfolder)
     # save_history(history, file, sfolder)
-    # save_model(model, file, sfolder)
+    save_model(model, file, sfolder)
     # save_components_fit(yt, y_pred, sfolder)
     # save_components_fit_9(yt, y_pred, sfolder)
 
@@ -667,11 +673,12 @@ def main(data_folder, num_data, active_function="relu", sfolder="", reshape_type
     print("time=", strtime)
 
     # 保存フォルダの指定,時刻がフォルダの名前になる
-    if not sfolder:
+    if not data_folder:
+        os.makedirs(strtime)
         sfolder = strtime
-        os.makedirs(sfolder)
     else:
-        sfolder = data_folder
+        sfolder = data_folder + "/" + strtime
+        os.makedirs(sfolder)
 
     file_train_y = data_folder + "/" + "mirror_train_data.pkl"
     file_train_x = data_folder + "/" + "detec_train_data.pkl"
@@ -699,13 +706,14 @@ def main(data_folder, num_data, active_function="relu", sfolder="", reshape_type
 
 if __name__ == '__main__':
     folder = "result/2020_1008_204550_ml_yattemita"
-    num_data = 4
+    num_data = 100
+    active_function = "relu"
     
     # for af, mode, ncn in itertools.product(["relu", "linear", "tanh", "sigmoid"], ["abs_phase", "abs", "real_imag"], [100]):
     #     # if af=="tanh" and mode =="abs_phase":
     #     #     continue
     #     main(folder, num_data, active_function=af, reshape_type=mode, num_conv_node=ncn)
 
-    main(folder, num_data)
+    main(folder, num_data, active_function)
 
 # ["tanh","linear","sigmoid","relu"] : #",10000]:
