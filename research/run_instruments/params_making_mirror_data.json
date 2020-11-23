@@ -1,12 +1,12 @@
 {
-  "dir_name": "amp_5_noise_rate_0",
+  "dir_name": "for_prasma",
   "shape": {
     "common": {
       "nx": 64,
       "ny": 64,
       "axis_x": 64,
       "axis_y": 64,
-      "amp": 5.0,
+      "amp": 1.0,
       "noise_rate": 0.0
     },
     "elip": {
@@ -14,15 +14,15 @@
       "test_num": 0,
       "elip_num_min": 1,
       "elip_num_max": 2,
-      "elip_len_x_min": 1,
-      "elip_len_x_max": 45,
+      "elip_len_x_min": 15,
+      "elip_len_x_max": 30,
       "elip_len_y_min": 1,
-      "elip_len_y_max": 45,
+      "elip_len_y_max": 10,
       "coord_x_min": 1,
       "coord_x_max": 65,
       "coord_y_min": 1,
       "coord_y_max": 65,
-      "theta_rate": 1
+      "theta_rate": 4
     },
     "mode": {
       "train_num": 0,

@@ -91,8 +91,12 @@ def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_
                 x_formula = X**2 / elip_len_x_list[k]**2    # 楕円の方程式のxとa部分
                 y_formula = Y**2 / elip_len_y_list[k]**2    # 楕円の方程式のyとb部分
 
+                # # 楕円の条件を通す
                 if x_formula + y_formula <= 1:
-                    elip_spot_mirror[j, i] += amp * np.exp(-(X**2 / elip_len_x_list[k]**2) - (Y**2 / elip_len_y_list[k]**2))    # ガウス分布*amplitude(最大値)
+                    elip_spot_mirror[j, i] += amp * np.exp(- x_formula - y_formula)    # ガウス分布*amplitude(最大値)
+
+                # 楕円の条件を無くす！ただの確率密度関数(ちょっと違うけど)となる。
+                # elip_spot_mirror[j, i] += amp * np.exp(- x_formula - y_formula)
 
     xx = np.linspace(-0.5, 0.5, nx) * axis_x    # -0.5〜0.5間でnx個に分けて、axis_xでブロードキャスト
     yy = np.linspace(-0.5, 0.5, ny) * axis_y    # -0.5〜0.5間でnx個に分けて、axis_yでブロードキャスト
@@ -267,7 +271,7 @@ def main_make_mirror_data():
         pickle.dump(mirror_test_data, f)
         print("output: ", mirror_params["pkl_mirror_test"], "\n")
 
-    print("Build {} folder\n".format(result_folder))
+    print("Build {}\n".format(result_folder))
 
     return result_folder
 
@@ -295,4 +299,4 @@ if __name__ == "__main__":
         pickle.dump(mirror_test_data, f)
         print("output: ", mirror_params["pkl_mirror_test"], "\n")
 
-    print("Build {} folder\n".format(result_folder))
+    print("Build {}\n".format(result_folder))
