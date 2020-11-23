@@ -36,16 +36,22 @@ def make_elip_param_list(elip_params, data_num):
 
     ellipse_nums = []
     param_list = []
+    elip_params["amp_degree"] = elip_params["max_degree"] - elip_params["min_degree"]
+
+    if elip_params["max_degree"] < elip_params["min_degree"]:
+        print("Error!!!")
+        print("You must set min_degree <= max_degree\n")
+        exit()
 
     for data_i in range(data_num):
 
         ellipse_nums.append(np.random.randint(elip_params["elip_num_min"], elip_params["elip_num_max"]))    # 楕円の数[vector]
 
-        init_elip_len_x_list = np.random.randint(elip_params["elip_len_x_min"], elip_params["elip_len_x_max"], size=ellipse_nums[data_i])    # 楕円の長さ(横)[matrix]
-        init_elip_len_y_list = np.random.randint(elip_params["elip_len_y_min"], elip_params["elip_len_y_max"], size=ellipse_nums[data_i])    # 楕円の長さ(縦)[matrix]
-        init_coord_x_list = np.random.randint(elip_params["coord_x_min"], elip_params["coord_x_max"], size=ellipse_nums[data_i])     # 楕円の中心からのズレ(横)[matrix]
-        init_coord_y_list = np.random.randint(elip_params["coord_y_min"], elip_params["coord_y_max"], size=ellipse_nums[data_i])     # 楕円の中心からのズレ(縦)[matrix]
-        init_theta_list = np.pi * np.random.rand(ellipse_nums[data_i]) * 2 / elip_params["theta_rate"]   # 楕円の回転角[matrix]
+        init_elip_len_x_list = np.random.randint(elip_params["elip_len_x_min"], elip_params["elip_len_x_max"], size=ellipse_nums[data_i])   # 楕円の長さ(横)[matrix]
+        init_elip_len_y_list = np.random.randint(elip_params["elip_len_y_min"], elip_params["elip_len_y_max"], size=ellipse_nums[data_i])   # 楕円の長さ(縦)[matrix]
+        init_coord_x_list = np.random.randint(elip_params["coord_x_min"], elip_params["coord_x_max"], size=ellipse_nums[data_i])            # 楕円の中心からのズレ(横)[matrix]
+        init_coord_y_list = np.random.randint(elip_params["coord_y_min"], elip_params["coord_y_max"], size=ellipse_nums[data_i])            # 楕円の中心からのズレ(縦)[matrix]
+        init_theta_list = np.random.rand(ellipse_nums[data_i]) * elip_params["amp_degree"] / 180 * np.pi + (elip_params["min_degree"] / 180 * np.pi)    # 楕円の回転角[matrix]
 
         param_list.append(np.array([init_elip_len_x_list, init_elip_len_y_list, init_coord_x_list, init_coord_y_list, init_theta_list]))
         
@@ -92,11 +98,11 @@ def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_
                 y_formula = Y**2 / elip_len_y_list[k]**2    # 楕円の方程式のyとb部分
 
                 # # 楕円の条件を通す
-                if x_formula + y_formula <= 1:
-                    elip_spot_mirror[j, i] += amp * np.exp(- x_formula - y_formula)    # ガウス分布*amplitude(最大値)
+                # if x_formula + y_formula <= 1:
+                #     elip_spot_mirror[j, i] += amp * np.exp(- x_formula - y_formula)    # ガウス分布*amplitude(最大値)
 
                 # 楕円の条件を無くす！ただの確率密度関数(ちょっと違うけど)となる。
-                # elip_spot_mirror[j, i] += amp * np.exp(- x_formula - y_formula)
+                elip_spot_mirror[j, i] += amp * np.exp(- x_formula - y_formula)
 
     xx = np.linspace(-0.5, 0.5, nx) * axis_x    # -0.5〜0.5間でnx個に分けて、axis_xでブロードキャスト
     yy = np.linspace(-0.5, 0.5, ny) * axis_y    # -0.5〜0.5間でnx個に分けて、axis_yでブロードキャスト

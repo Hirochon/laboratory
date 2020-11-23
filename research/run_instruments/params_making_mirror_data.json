@@ -10,19 +10,20 @@
       "noise_rate": 0.0
     },
     "elip": {
-      "train_num": 4,
+      "train_num": 6,
       "test_num": 0,
-      "elip_num_min": 1,
-      "elip_num_max": 2,
+      "elip_num_min": 5,
+      "elip_num_max": 6,
       "elip_len_x_min": 15,
-      "elip_len_x_max": 30,
-      "elip_len_y_min": 1,
-      "elip_len_y_max": 10,
+      "elip_len_x_max": 17,
+      "elip_len_y_min": 4,
+      "elip_len_y_max": 6,
       "coord_x_min": 1,
       "coord_x_max": 65,
       "coord_y_min": 1,
       "coord_y_max": 65,
-      "theta_rate": 4
+      "max_degree": 30,
+      "min_degree": -30
     },
     "mode": {
       "train_num": 0,
