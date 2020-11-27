@@ -86,6 +86,9 @@ def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_
     
     for k in range(ellipse_num):
         rotate = np.array([[np.cos(theta_list[k]), np.sin(theta_list[k])], [-np.sin(theta_list[k]), np.cos(theta_list[k])]])    # 回転行列の定義
+        plus_minus = [-1, 1]
+        zero_one_randomer = np.random.randint(0, 2)
+        rated_amp = np.random.rand() * amp
         
         for j in range(axis_y):
             for i in range(axis_x):
@@ -102,7 +105,7 @@ def make_elip_spot_mirror(elip_len_x_list, elip_len_y_list, coord_x_list, coord_
                 #     elip_spot_mirror[j, i] += amp * np.exp(- x_formula - y_formula)    # ガウス分布*amplitude(最大値)
 
                 # 楕円の条件を無くす！ただの確率密度関数(ちょっと違うけど)となる。
-                elip_spot_mirror[j, i] += amp * np.exp(- x_formula - y_formula)
+                elip_spot_mirror[j, i] += plus_minus[zero_one_randomer] * rated_amp * np.exp(- x_formula - y_formula)
 
     xx = np.linspace(-0.5, 0.5, nx) * axis_x    # -0.5〜0.5間でnx個に分けて、axis_xでブロードキャスト
     yy = np.linspace(-0.5, 0.5, ny) * axis_y    # -0.5〜0.5間でnx個に分けて、axis_yでブロードキャスト
