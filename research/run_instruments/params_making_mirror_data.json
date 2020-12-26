@@ -1,5 +1,5 @@
 {
-  "dir_name": "for_prasma",
+  "dir_name": "upsampling_16-32",
   "shape": {
     "common": {
       "nx": 64,
@@ -10,14 +10,14 @@
       "noise_rate": 0.0
     },
     "elip": {
-      "train_num": 6,
+      "train_num": 4,
       "test_num": 0,
-      "elip_num_min": 5,
-      "elip_num_max": 6,
-      "elip_len_x_min": 15,
-      "elip_len_x_max": 16,
-      "elip_len_y_min": 15,
-      "elip_len_y_max": 16,
+      "elip_num_min": 30,
+      "elip_num_max": 31,
+      "elip_len_x_min": 12,
+      "elip_len_x_max": 13,
+      "elip_len_y_min": 4,
+      "elip_len_y_max": 5,
       "coord_x_min": 1,
       "coord_x_max": 65,
       "coord_y_min": 1,

@@ -3,11 +3,11 @@
   "noise": 0.0,
   "detector": {
       "center": [0.0,0.0,-100.0],
-      "num_x" : 16,
-      "num_y" : 16,
+      "num_x" : 64,
+      "num_y" : 64,
       "num_z" : 1,
-      "dx"    : 32.0,
-      "dy"    : 32.0,
+      "dx"    : 8.0,
+      "dy"    : 8.0,
       "dz"    : 1.0,
       "x_theata" : 0.0,
       "y_theata" : 0.0,
@@ -29,7 +29,7 @@
     "___comment":"choose 'complex' or 'real'",
     "type":"complex"
   },
-  "pkl_detec_train": "detec_train_data.pkl",
-  "pkl_detec_test": "detec_test_data.pkl",
-  "result_folder": "2020_0923_225754_none_elip_and_mode"
+  "pkl_detec_train": "detec_64_train_data.pkl",
+  "pkl_detec_test": "detec_64_test_data.pkl",
+  "result_folder": "2020_1211_152053_upsampling_16-32"
 }
