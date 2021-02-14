@@ -1,5 +1,5 @@
 {
-  "dir_name": "upsampling_16-32",
+  "dir_name": "for_paper_mirror_1",
   "shape": {
     "common": {
       "nx": 64,
@@ -28,7 +28,11 @@
     "mode": {
       "train_num": 0,
       "test_num": 0,
-      "center": [0,0,0],
+      "center": [
+        0,
+        0,
+        0
+      ],
       "max_m": 1,
       "max_n": 1
     }
