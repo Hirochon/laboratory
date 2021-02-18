@@ -1,5 +1,5 @@
 {
-  "dir_name": "elip30_12_4_train20000_test2000",
+  "dir_name": "random_height_and_plusminus_elip5_20_7",
   "shape": {
     "common": {
       "nx": 64,
@@ -10,14 +10,14 @@
       "noise_rate": 0.0
     },
     "elip": {
-      "train_num": 20000,
-      "test_num": 2000,
-      "elip_num_min": 30,
-      "elip_num_max": 31,
-      "elip_len_x_min": 12,
-      "elip_len_x_max": 13,
-      "elip_len_y_min": 4,
-      "elip_len_y_max": 5,
+      "train_num": 5000,
+      "test_num": 1000,
+      "elip_num_min": 5,
+      "elip_num_max": 6,
+      "elip_len_x_min": 20,
+      "elip_len_x_max": 21,
+      "elip_len_y_min": 7,
+      "elip_len_y_max": 8,
       "coord_x_min": 1,
       "coord_x_max": 65,
       "coord_y_min": 1,

@@ -3,11 +3,11 @@
   "noise": 0.0,
   "detector": {
       "center": [0.0,0.0,-100.0],
-      "num_x" : 16,
-      "num_y" : 16,
+      "num_x" : 32,
+      "num_y" : 32,
       "num_z" : 1,
-      "dx"    : 32.0,
-      "dy"    : 32.0,
+      "dx"    : 16.0,
+      "dy"    : 16.0,
       "dz"    : 1.0,
       "x_theata" : 0.0,
       "y_theata" : 0.0,
@@ -17,6 +17,7 @@
   "source":{
     "center":  [0.0,0.0,-100.0]
   },
+  
   "propagation_mode":{
     "_comment":"what is type of propagation mode",
     "__comment":"sphrical,...",
@@ -29,7 +30,7 @@
     "___comment":"choose 'complex' or 'real'",
     "type":"complex"
   },
-  "pkl_detec_train": "detec_train_data.pkl",
-  "pkl_detec_test": "detec_test_data.pkl",
-  "result_folder": "2020_0923_225754_none_elip_and_mode"
+  "pkl_detec_train": "detec_32_train_data.pkl",
+  "pkl_detec_test": "detec_32_test_data.pkl",
+  "result_folder": "2020_1204_182942_elip30_12_4_train20000_test2000"
 }

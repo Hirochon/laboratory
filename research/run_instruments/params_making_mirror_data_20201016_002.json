@@ -1,36 +1,36 @@
 {
-  "dir_name": "elip30_12_4_train20000_test2000",
+  "dir_name": "add_noise_paramator_030_test1000",
   "shape": {
     "common": {
       "nx": 64,
       "ny": 64,
       "axis_x": 64,
-      "axis_y": 64,
-      "amp": 1.0,
-      "noise_rate": 0.0
+      "axis_y": 64
     },
     "elip": {
-      "train_num": 20000,
-      "test_num": 2000,
-      "elip_num_min": 30,
-      "elip_num_max": 31,
-      "elip_len_x_min": 12,
-      "elip_len_x_max": 13,
-      "elip_len_y_min": 4,
-      "elip_len_y_max": 5,
+      "train_num": 5000,
+      "test_num": 1000,
+      "elip_num_min": 1,
+      "elip_num_max": 2,
+      "elip_len_x_min": 1,
+      "elip_len_x_max": 45,
+      "elip_len_y_min": 1,
+      "elip_len_y_max": 45,
       "coord_x_min": 1,
       "coord_x_max": 65,
       "coord_y_min": 1,
       "coord_y_max": 65,
-      "max_degree": 30,
-      "min_degree": -30
+      "theta_rate": 1,
+      "noise": 0.3
     },
     "mode": {
       "train_num": 0,
       "test_num": 0,
       "center": [0,0,0],
       "max_m": 1,
-      "max_n": 1
+      "max_n": 1,
+      "noise": 0.0,
+      "amp": 0.1
     }
   },
   "pkl_mirror_train": "mirror_train_data.pkl",
